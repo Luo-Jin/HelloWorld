@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .iframe-container {
+            width: 100%;
+        }
+        .banner-frame {
+            height: 200px;
+            border: none;
+            border-bottom: 2px solid #ccc;
+        }
+        .dropdown-frame {
+            height: 100px;
+            border: none;
+            border-bottom: 2px solid #ccc;
+        }
+        .info-frame {
+            flex: 1;
+            border: none;
+            min-height: 300px;
+        }
+        iframe {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top iframe: Banner -->
+    <iframe src="/banner" class="banner-frame" title="Banner"></iframe>
+    
+    <!-- Middle iframe: Dropdowns -->
+    <iframe src="/dropdowns" class="dropdown-frame" title="Dropdown Filters"></iframe>
+    
+    <!-- Bottom iframe: Info Section -->
+    <iframe src="/info" class="info-frame" title="Information"></iframe>
+</body>
+</html>

@@ -1,12 +1,12 @@
 import os
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
 
 def create_app(test_config=None):
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(__name__, instance_relative_config=True, template_folder='../templates')
     app.config.from_mapping(
         SECRET_KEY='dev',
         SQLALCHEMY_DATABASE_URI='sqlite:///' + os.path.join(app.instance_path, 'app.sqlite'),
@@ -24,7 +24,23 @@ def create_app(test_config=None):
     db.init_app(app)
 
     @app.route('/')
+    def home():
+        return render_template('index.html')
+
+    @app.route('/hello')
     def hello():
         return 'Hello, world!'
+
+    @app.route('/banner')
+    def banner():
+        return render_template('banner.html')
+
+    @app.route('/dropdowns')
+    def dropdowns():
+        return render_template('dropdowns.html')
+
+    @app.route('/info')
+    def info():
+        return render_template('info.html')
 
     return app

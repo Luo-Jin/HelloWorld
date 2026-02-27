@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            padding: 20px;
+        }
+        .info-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .info-header {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .info-content {
+            color: #666;
+            line-height: 1.6;
+        }
+        .placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            background-color: #f9f9f9;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            color: #999;
+        }
+        .placeholder-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="info-container">
+        <h2 class="info-header">Information</h2>
+        <div class="info-content">
+            <div class="placeholder">
+                <div class="placeholder-icon">📋</div>
+                <p>Content will be displayed here</p>
+                <p><small>Select options from the dropdowns above to see results</small></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
