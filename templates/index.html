@@ -44,9 +44,23 @@
     <iframe src="/banner" class="banner-frame" title="Banner"></iframe>
     
     <!-- Middle iframe: Dropdowns -->
-    <iframe src="/dropdowns" class="dropdown-frame" title="Dropdown Filters"></iframe>
+    <iframe src="/dropdowns" class="dropdown-frame" title="Dropdown Filters" name="dropdownsFrame"></iframe>
     
     <!-- Bottom iframe: Info Section -->
-    <iframe src="/info" class="info-frame" title="Information"></iframe>
+    <iframe src="/info" class="info-frame" title="Information" name="infoFrame" id="infoFrame"></iframe>
+    
+    <script>
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'filterDistrict') {
+                var infoFrame = document.getElementById('infoFrame');
+                var district = event.data.district;
+                if (district) {
+                    infoFrame.src = '/info?district=' + encodeURIComponent(district);
+                } else {
+                    infoFrame.src = '/info';
+                }
+            }
+        });
+    </script>
 </body>
 </html>

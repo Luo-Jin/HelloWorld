@@ -59,12 +59,12 @@
 <body>
     <div class="dropdown-container">
         <div class="dropdown-wrapper">
-            <label for="category">Category</label>
-            <select id="category" name="category">
-                <option value="">Select...</option>
-                <option value="electronics">Electronics</option>
-                <option value="clothing">Clothing</option>
-                <option value="books">Books</option>
+            <label for="category">District</label>
+            <select id="category" name="category" onchange="filterByDistrict(this.value)">
+                <option value="">All Districts</option>
+                {% for district in districts %}
+                <option value="{{ district }}">{{ district }}</option>
+                {% endfor %}
             </select>
         </div>
         
@@ -109,5 +109,10 @@
             </select>
         </div>
     </div>
+    <script>
+        function filterByDistrict(district) {
+            window.parent.postMessage({type: 'filterDistrict', district: district}, '*');
+        }
+    </script>
 </body>
 </html>

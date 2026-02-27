@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -23,6 +23,11 @@ def create_app(test_config=None):
 
     db.init_app(app)
 
+    # Import models and create tables
+    from . import models
+    with app.app_context():
+        db.create_all()
+
     @app.route('/')
     def home():
         return render_template('index.html')
@@ -37,10 +42,19 @@ def create_app(test_config=None):
 
     @app.route('/dropdowns')
     def dropdowns():
-        return render_template('dropdowns.html')
+        from .models import School
+        districts = db.session.query(School.sch_district).distinct().filter(School.sch_district.isnot(None)).order_by(School.sch_district).all()
+        districts = [d[0] for d in districts if d[0]]
+        return render_template('dropdowns.html', districts=districts)
 
     @app.route('/info')
     def info():
-        return render_template('info.html')
+        from .models import School
+        district = request.args.get('district', '')
+        if district:
+            schools = School.query.filter(School.sch_district == district).all()
+        else:
+            schools = School.query.all()
+        return render_template('info.html', schools=schools)
 
     return app
