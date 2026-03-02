@@ -23,6 +23,7 @@ class School(db.Model):
     sch_district = db.Column(db.String(100), nullable=True)  # School district/local board area
     sch_region = db.Column(db.String(50), nullable=True)  # Auckland major sector (North Shore, Central, East, South, West, Rural)
     sch_type = db.Column(db.String(100), nullable=True)  # School type (e.g., Full Primary, Contributing, Secondary)
+    tour = db.Column(db.Boolean, nullable=False, default=False)
 
     def __repr__(self):
         return f'<School {self.sch_name}>'
