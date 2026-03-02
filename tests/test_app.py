@@ -5,7 +5,10 @@ from app import create_app
 @pytest.fixture
 def app():
     """Create test app."""
-    app = create_app({"TESTING": True})
+    app = create_app({
+        "TESTING": True,
+        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
+    })
     return app
 
 
