@@ -59,59 +59,35 @@
 <body>
     <div class="dropdown-container">
         <div class="dropdown-wrapper">
-            <label for="category">District</label>
-            <select id="category" name="category" onchange="filterByDistrict(this.value)">
-                <option value="">All Districts</option>
-                {% for district in districts %}
-                <option value="{{ district }}">{{ district }}</option>
+            <label for="category">Region</label>
+            <select id="category" name="category" onchange="applyFilters()">
+                <option value="">All Regions</option>
+                {% for region in regions %}
+                <option value="{{ region }}">{{ region }}</option>
                 {% endfor %}
             </select>
         </div>
         
         <div class="dropdown-wrapper">
-            <label for="brand">Brand</label>
-            <select id="brand" name="brand">
-                <option value="">Select...</option>
-                <option value="apple">Apple</option>
-                <option value="samsung">Samsung</option>
-                <option value="sony">Sony</option>
-            </select>
-        </div>
-        
-        <div class="dropdown-wrapper">
-            <label for="price">Price Range</label>
-            <select id="price" name="price">
-                <option value="">Select...</option>
-                <option value="0-50">$0 - $50</option>
-                <option value="50-100">$50 - $100</option>
-                <option value="100+">$100+</option>
-            </select>
-        </div>
-        
-        <div class="dropdown-wrapper">
-            <label for="rating">Rating</label>
-            <select id="rating" name="rating">
-                <option value="">Select...</option>
-                <option value="5">5 Stars</option>
-                <option value="4">4+ Stars</option>
-                <option value="3">3+ Stars</option>
-            </select>
-        </div>
-        
-        <div class="dropdown-wrapper">
-            <label for="sort">Sort By</label>
-            <select id="sort" name="sort">
-                <option value="">Select...</option>
-                <option value="newest">Newest</option>
-                <option value="popular">Most Popular</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
+            <label for="schoolType">School Type</label>
+            <select id="schoolType" name="schoolType" onchange="applyFilters()">
+                <option value="">All Types</option>
+                {% for type in school_types %}
+                <option value="{{ type }}">{{ type }}</option>
+                {% endfor %}
             </select>
         </div>
     </div>
     <script>
-        function filterByDistrict(district) {
-            window.parent.postMessage({type: 'filterDistrict', district: district}, '*');
+        function applyFilters() {
+            var region = document.getElementById('category').value;
+            var schoolType = document.getElementById('schoolType').value;
+            
+            window.parent.postMessage({
+                type: 'applyFilters',
+                region: region,
+                schoolType: schoolType
+            }, '*');
         }
     </script>
 </body>

@@ -14,7 +14,8 @@
             min-height: 100vh;
             font-family: Arial, sans-serif;
             background-color: #fff;
-            padding: 20px;
+            padding: 10px;
+            font-size: 14px;
         }
         .info-container {
             max-width: 1200px;
@@ -30,41 +31,43 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
         }
         th, td {
-            padding: 12px 15px;
+            padding: 6px 10px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #eee;
         }
         th {
             background-color: #667eea;
             color: white;
-            font-weight: bold;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-size: 13px;
         }
         tr:hover {
             background-color: #f5f5f5;
         }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
         .school-logo {
-            width: 40px;
-            height: 40px;
+            width: 28px;
+            height: 28px;
             object-fit: contain;
-            background-color: #eee;
-            border-radius: 5px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            vertical-align: middle;
         }
-        .email-link {
-            color: #667eea;
-            text-decoration: none;
+        .school-name {
+            font-weight: 500;
         }
-        .email-link:hover {
-            text-decoration: underline;
+        .school-type {
+            color: #666;
+            font-size: 12px;
         }
         .homepage-link {
             color: #667eea;
             text-decoration: none;
+            font-size: 12px;
         }
         .homepage-link:hover {
             text-decoration: underline;
@@ -78,32 +81,25 @@
 </head>
 <body>
     <div class="info-container">
-        <h2 class="info-header">Auckland Primary Schools</h2>
         {% if schools %}
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>District</th>
-                    <th>Description</th>
-                    <th>Address</th>
+                    <th></th>
+                    <th>School</th>
+                    <th>Type</th>
                     <th>EOI</th>
-                    <th>Decile</th>
-                    <th>Homepage</th>
+                    <th>Link</th>
                 </tr>
             </thead>
             <tbody>
                 {% for school in schools %}
                 <tr>
-                    <td>{{ school.sch_id }}</td>
-                    <td><strong>{{ school.sch_name }}</strong></td>
-                    <td>{{ school.sch_district }}</td>
-                    <td>{{ school.sch_desc }}</td>
-                    <td>{{ school.sch_addr }}</td>
+                    <td>{% if school.sch_logo %}<img src="{{ school.sch_logo }}" alt="" class="school-logo">{% else %}<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z'/%3E%3C/svg%3E" alt="" class="school-logo">{% endif %}</td>
+                    <td class="school-name">{{ school.sch_name }}</td>
+                    <td class="school-type">{{ school.sch_type }}</td>
                     <td>{{ school.sch_eoi }}</td>
-                    <td>{{ school.sch_decile }}</td>
-                    <td>{% if school.sch_homepage %}<a href="{{ school.sch_homepage }}" class="homepage-link" target="_blank">Visit</a>{% endif %}</td>
+                    <td>{% if school.sch_homepage %}<a href="{{ school.sch_homepage }}" class="homepage-link" target="_blank">↗</a>{% endif %}</td>
                 </tr>
                 {% endfor %}
             </tbody>

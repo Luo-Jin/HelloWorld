@@ -43,18 +43,27 @@ def create_app(test_config=None):
     @app.route('/dropdowns')
     def dropdowns():
         from .models import School
-        districts = db.session.query(School.sch_district).distinct().filter(School.sch_district.isnot(None)).order_by(School.sch_district).all()
-        districts = [d[0] for d in districts if d[0]]
-        return render_template('dropdowns.html', districts=districts)
+        regions = db.session.query(School.sch_region).distinct().filter(School.sch_region.isnot(None)).order_by(School.sch_region).all()
+        regions = [r[0] for r in regions if r[0]]
+        school_types = db.session.query(School.sch_type).distinct().filter(School.sch_type.isnot(None)).order_by(School.sch_type).all()
+        school_types = [t[0] for t in school_types if t[0]]
+        return render_template('dropdowns.html', regions=regions, school_types=school_types)
 
     @app.route('/info')
     def info():
         from .models import School
-        district = request.args.get('district', '')
-        if district:
-            schools = School.query.filter(School.sch_district == district).all()
-        else:
-            schools = School.query.all()
+        region = request.args.get('region', '')
+        school_type = request.args.get('school_type', '')
+        
+        query = School.query
+        
+        if region:
+            query = query.filter(School.sch_region == region)
+        
+        if school_type:
+            query = query.filter(School.sch_type == school_type)
+        
+        schools = query.all()
         return render_template('info.html', schools=schools)
 
     return app

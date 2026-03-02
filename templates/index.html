@@ -51,11 +51,19 @@
     
     <script>
         window.addEventListener('message', function(event) {
-            if (event.data.type === 'filterDistrict') {
+            if (event.data.type === 'applyFilters') {
                 var infoFrame = document.getElementById('infoFrame');
-                var district = event.data.district;
-                if (district) {
-                    infoFrame.src = '/info?district=' + encodeURIComponent(district);
+                var params = [];
+                
+                if (event.data.region) {
+                    params.push('region=' + encodeURIComponent(event.data.region));
+                }
+                if (event.data.schoolType) {
+                    params.push('school_type=' + encodeURIComponent(event.data.schoolType));
+                }
+                
+                if (params.length > 0) {
+                    infoFrame.src = '/info?' + params.join('&');
                 } else {
                     infoFrame.src = '/info';
                 }

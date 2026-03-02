@@ -1,266 +1,490 @@
-"""Seed script to insert dummy data into the School table."""
+"""Seed script to insert school data from Education Counts Schools Directory API."""
 import sys
 import os
+import csv
+import requests
+from io import StringIO
+
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 from app import create_app, db
 from app.models import School
 
-app = create_app()
+# Education Counts Schools Directory API
+# Data.govt.nz CKAN API endpoint
+API_BASE_URL = "https://catalogue.data.govt.nz/api/3/action/datastore_search"
+RESOURCE_ID = "4b292323-9fcc-41f8-814b-3c7b19cf14b3"
 
-dummy_schools = [
-    {
-        "sch_name": "Takapuna Primary School",
-        "sch_desc": "A vibrant school committed to excellence in education on Auckland's North Shore.",
-        "sch_addr": "32 Lake Road, Takapuna, Auckland 0622, New Zealand",
-        "sch_email": "office@takapunaprimary.school.nz",
-        "sch_logo": "/static/logos/takapuna_primary.png",
-        "sch_eoi": 430,
-        "sch_decile": 9,
-        "sch_homepage": "https://www.takapunaprimary.school.nz/",
-        "sch_district": "Devonport-Takapuna"
-    },
-    {
-        "sch_name": "Milford School",
-        "sch_desc": "Providing quality education in a caring and supportive environment.",
-        "sch_addr": "Shakespeare Road, Milford, Auckland 0620, New Zealand",
-        "sch_email": "office@milford.school.nz",
-        "sch_logo": "/static/logos/milford.png",
-        "sch_eoi": 415,
-        "sch_decile": 10,
-        "sch_homepage": "https://www.milford.school.nz/",
-        "sch_district": "Devonport-Takapuna"
-    },
-    {
-        "sch_name": "Devonport Primary School",
-        "sch_desc": "A community school with a proud history of educational excellence.",
-        "sch_addr": "Kerr Street, Devonport, Auckland 0624, New Zealand",
-        "sch_email": "office@devonportprimary.school.nz",
-        "sch_logo": "/static/logos/devonport.png",
-        "sch_eoi": 412,
-        "sch_decile": 10,
-        "sch_homepage": "https://www.devonportprimary.school.nz/",
-        "sch_district": "Devonport-Takapuna"
-    },
-    {
-        "sch_name": "Belmont Primary School",
-        "sch_desc": "Nurturing potential and inspiring learning on the North Shore.",
-        "sch_addr": "Eversleigh Road, Belmont, Auckland 0622, New Zealand",
-        "sch_email": "office@belmont.school.nz",
-        "sch_logo": "/static/logos/belmont.png",
-        "sch_eoi": 418,
-        "sch_decile": 10,
-        "sch_homepage": "https://www.belmont.school.nz/",
-        "sch_district": "Devonport-Takapuna"
-    },
-    {
-        "sch_name": "Hauraki School",
-        "sch_desc": "Building strong foundations for lifelong learning.",
-        "sch_addr": "Jutland Road, Hauraki, Auckland 0622, New Zealand",
-        "sch_email": "office@hauraki.school.nz",
-        "sch_logo": "/static/logos/hauraki.png",
-        "sch_eoi": 410,
-        "sch_decile": 10,
-        "sch_homepage": "https://www.hauraki.school.nz/",
-        "sch_district": "Devonport-Takapuna"
-    },
-    {
-        "sch_name": "Westlake Boys High School (Primary Campus)",
-        "sch_desc": "Excellence in boys' education from primary through high school.",
-        "sch_addr": "Forrest Hill Road, Forrest Hill, Auckland 0620, New Zealand",
-        "sch_email": "admin@westlake.school.nz",
-        "sch_logo": "/static/logos/westlake.png",
-        "sch_eoi": 425,
-        "sch_decile": 9,
-        "sch_homepage": "https://www.westlake.school.nz/",
-        "sch_district": "Devonport-Takapuna"
-    },
-    {
-        "sch_name": "Campbells Bay School",
-        "sch_desc": "A leading primary school fostering creativity and academic achievement.",
-        "sch_addr": "Aberdeen Road, Campbells Bay, Auckland 0630, New Zealand",
-        "sch_email": "office@campbellsbay.school.nz",
-        "sch_logo": "/static/logos/campbellsbay.png",
-        "sch_eoi": 405,
-        "sch_decile": 10,
-        "sch_homepage": "https://www.campbellsbay.school.nz/",
-        "sch_district": "Hibiscus and Bays"
-    },
-    {
-        "sch_name": "Mairangi Bay School",
-        "sch_desc": "Inspiring young minds in a supportive beachside community.",
-        "sch_addr": "Hastings Road, Mairangi Bay, Auckland 0630, New Zealand",
-        "sch_email": "office@mairangibay.school.nz",
-        "sch_logo": "/static/logos/mairangibay.png",
-        "sch_eoi": 408,
-        "sch_decile": 10,
-        "sch_homepage": "https://www.mairangibay.school.nz/",
-        "sch_district": "Hibiscus and Bays"
-    },
-    {
-        "sch_name": "Northcross Intermediate School",
-        "sch_desc": "Bridging primary and secondary education with innovative programmes.",
-        "sch_addr": "Dorahy Avenue, Browns Bay, Auckland 0630, New Zealand",
-        "sch_email": "admin@northcross.school.nz",
-        "sch_logo": "/static/logos/northcross.png",
-        "sch_eoi": 412,
-        "sch_decile": 10,
-        "sch_homepage": "https://www.northcross.school.nz/",
-        "sch_district": "Hibiscus and Bays"
-    },
-    {
-        "sch_name": "Birkdale Primary School",
-        "sch_desc": "A welcoming school nurturing curious and confident learners.",
-        "sch_addr": "Birkdale Road, Birkdale, Auckland 0626, New Zealand",
-        "sch_email": "office@birkdale.school.nz",
-        "sch_logo": "/static/logos/birkdale.png",
-        "sch_eoi": 445,
-        "sch_decile": 8,
-        "sch_homepage": "https://www.birkdale.school.nz/",
-        "sch_district": "Kaipatiki"
-    },
-    # Auckland City Primary Schools
-    {
-        "sch_name": "Ponsonby Primary School",
-        "sch_desc": "A diverse inner-city school with a strong community focus.",
-        "sch_addr": "Clarence Street, Ponsonby, Auckland 1011, New Zealand",
-        "sch_email": "office@ponsonby.school.nz",
-        "sch_logo": "/static/logos/ponsonby.png",
-        "sch_eoi": 438,
-        "sch_decile": 9,
-        "sch_homepage": "https://www.ponsonby.school.nz/",
-        "sch_district": "Waitemata"
-    },
-    {
-        "sch_name": "Freemans Bay School",
-        "sch_desc": "An innovative school in the heart of Auckland city.",
-        "sch_addr": "Wellington Street, Freemans Bay, Auckland 1011, New Zealand",
-        "sch_email": "office@freemansbay.school.nz",
-        "sch_logo": "/static/logos/freemansbay.png",
-        "sch_eoi": 442,
-        "sch_decile": 8,
-        "sch_homepage": "https://www.freemansbay.school.nz/",
-        "sch_district": "Waitemata"
-    },
-    {
-        "sch_name": "Epsom Normal Primary School",
-        "sch_desc": "Excellence in education with a focus on student wellbeing.",
-        "sch_addr": "Gillies Avenue, Epsom, Auckland 1023, New Zealand",
-        "sch_email": "office@epsomnormal.school.nz",
-        "sch_logo": "/static/logos/epsomnormal.png",
-        "sch_eoi": 420,
-        "sch_decile": 10,
-        "sch_homepage": "https://www.epsomnormal.school.nz/",
-        "sch_district": "Albert-Eden"
-    },
-    {
-        "sch_name": "Remuera Primary School",
-        "sch_desc": "A premiere school delivering quality education since 1886.",
-        "sch_addr": "Dromorne Road, Remuera, Auckland 1050, New Zealand",
-        "sch_email": "office@remps.school.nz",
-        "sch_logo": "/static/logos/remuera.png",
-        "sch_eoi": 415,
-        "sch_decile": 10,
-        "sch_homepage": "https://www.remps.school.nz/",
-        "sch_district": "Orakei"
-    },
-    {
-        "sch_name": "Auckland Normal Intermediate",
-        "sch_desc": "Preparing students for secondary school success.",
-        "sch_addr": "Poronui Street, Mt Eden, Auckland 1024, New Zealand",
-        "sch_email": "admin@ani.school.nz",
-        "sch_logo": "/static/logos/ani.png",
-        "sch_eoi": 425,
-        "sch_decile": 9,
-        "sch_homepage": "https://www.ani.school.nz/",
-        "sch_district": "Albert-Eden"
-    },
-    {
-        "sch_name": "Grey Lynn School",
-        "sch_desc": "A vibrant multicultural school celebrating diversity.",
-        "sch_addr": "Surrey Crescent, Grey Lynn, Auckland 1021, New Zealand",
-        "sch_email": "office@greylynn.school.nz",
-        "sch_logo": "/static/logos/greylynn.png",
-        "sch_eoi": 448,
-        "sch_decile": 7,
-        "sch_homepage": "https://www.greylynn.school.nz/",
-        "sch_district": "Albert-Eden"
-    },
-    {
-        "sch_name": "Mt Eden Normal Primary School",
-        "sch_desc": "Nurturing excellence in a supportive learning environment.",
-        "sch_addr": "Valley Road, Mt Eden, Auckland 1024, New Zealand",
-        "sch_email": "office@mtedennormal.school.nz",
-        "sch_logo": "/static/logos/mteden.png",
-        "sch_eoi": 428,
-        "sch_decile": 9,
-        "sch_homepage": "https://www.mtedennormal.school.nz/",
-        "sch_district": "Albert-Eden"
-    },
-    {
-        "sch_name": "Parnell District School",
-        "sch_desc": "A historic school with modern teaching approaches.",
-        "sch_addr": "George Street, Parnell, Auckland 1052, New Zealand",
-        "sch_email": "office@parnellschool.co.nz",
-        "sch_logo": "/static/logos/parnell.png",
-        "sch_eoi": 422,
-        "sch_decile": 10,
-        "sch_homepage": "https://www.parnellschool.co.nz/",
-        "sch_district": "Waitemata"
-    },
-    {
-        "sch_name": "Newmarket School",
-        "sch_desc": "Building confident learners in the heart of Newmarket.",
-        "sch_addr": "Khyber Pass Road, Newmarket, Auckland 1023, New Zealand",
-        "sch_email": "office@newmarket.school.nz",
-        "sch_logo": "/static/logos/newmarket.png",
-        "sch_eoi": 435,
-        "sch_decile": 8,
-        "sch_homepage": "https://www.newmarket.school.nz/",
-        "sch_district": "Albert-Eden"
-    },
-    {
-        "sch_name": "St Heliers School",
-        "sch_desc": "Excellence in coastal Auckland primary education.",
-        "sch_addr": "St Heliers Bay Road, St Heliers, Auckland 1071, New Zealand",
-        "sch_email": "office@stheliers.school.nz",
-        "sch_logo": "/static/logos/stheliers.png",
-        "sch_eoi": 412,
-        "sch_decile": 10,
-        "sch_homepage": "https://www.stheliers.school.nz/",
-        "sch_district": "Orakei"
-    }
-]
+# Fallback: CSV file path for offline use
+DEFAULT_CSV_PATH = os.path.join(os.path.dirname(__file__), 'data', 'schools.csv')
 
-with app.app_context():
-    # Create tables if they don't exist
-    db.create_all()
+
+def fetch_schools_from_api(region=None, school_type=None, limit=100):
+    """Fetch school data from Education Counts Schools Directory API.
     
-    # Check if schools already exist
-    existing_count = School.query.count()
-    if existing_count > 0:
-        print(f"Database already has {existing_count} schools. Skipping seed.")
-    else:
-        # Insert dummy data
-        for school_data in dummy_schools:
+    Args:
+        region: Filter by region (searches Regional_Council or Territorial_Authority)
+        school_type: Filter by school type (e.g., "Full Primary", "Contributing")
+        limit: Maximum number of records to fetch (default: 100)
+        
+    Returns:
+        List of dictionaries containing school data
+    """
+    schools = []
+    
+    # Use SQL search for more flexible querying
+    sql_url = "https://catalogue.data.govt.nz/api/3/action/datastore_search_sql"
+    
+    # Build WHERE clause
+    conditions = ["\"Status\" = 'Open'"]  # Only open schools
+    
+    if region:
+        # Search in both Regional_Council and Territorial_Authority
+        conditions.append(f"(\"Regional_Council\" ILIKE '%{region}%' OR \"Territorial_Authority\" ILIKE '%{region}%')")
+    
+    if school_type:
+        conditions.append(f"\"Org_Type\" ILIKE '%{school_type}%'")
+    
+    where_clause = " AND ".join(conditions)
+    
+    sql = f'''
+        SELECT * FROM "{RESOURCE_ID}"
+        WHERE {where_clause}
+        ORDER BY "Org_Name"
+        LIMIT {limit}
+    '''
+    
+    try:
+        print(f"Fetching schools from API...")
+        response = requests.get(sql_url, params={'sql': sql}, timeout=30)
+        response.raise_for_status()
+        
+        data = response.json()
+        
+        if not data.get("success"):
+            error = data.get("error", {})
+            print(f"API error: {error}")
+            # Fall back to basic search
+            return fetch_schools_basic(region, school_type, limit)
+        
+        records = data.get("result", {}).get("records", [])
+        print(f"Found {len(records)} schools")
+        
+        for record in records:
+            school = map_api_record_to_school(record)
+            schools.append(school)
+            
+    except requests.RequestException as e:
+        print(f"Error fetching from API: {e}")
+        return []
+    
+    return schools
+
+
+def fetch_schools_basic(region=None, school_type=None, limit=100):
+    """Basic API fetch without SQL (fallback)."""
+    schools = []
+    offset = 0
+    
+    while len(schools) < limit:
+        params = {
+            "resource_id": RESOURCE_ID,
+            "limit": min(limit - len(schools), 100),
+            "offset": offset
+        }
+        
+        try:
+            response = requests.get(API_BASE_URL, params=params, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+            
+            if not data.get("success"):
+                break
+            
+            records = data.get("result", {}).get("records", [])
+            if not records:
+                break
+            
+            for record in records:
+                # Manual filtering
+                if region:
+                    ta = record.get("Territorial_Authority", "").lower()
+                    rc = record.get("Regional_Council", "").lower()
+                    if region.lower() not in ta and region.lower() not in rc:
+                        continue
+                
+                if school_type:
+                    ot = record.get("Org_Type", "").lower()
+                    if school_type.lower() not in ot:
+                        continue
+                
+                if record.get("Status") != "Open":
+                    continue
+                
+                school = map_api_record_to_school(record)
+                schools.append(school)
+                
+                if len(schools) >= limit:
+                    return schools
+            
+            offset += len(records)
+            total = data.get("result", {}).get("total", 0)
+            if offset >= total:
+                break
+                
+        except requests.RequestException as e:
+            print(f"Error: {e}")
+            break
+    
+    return schools
+
+
+# Mapping of Local Board Areas to Auckland major sectors
+LOCAL_BOARD_TO_REGION = {
+    # North Shore
+    'Devonport-Takapuna Local Board Area': 'North Shore',
+    'Hibiscus and Bays Local Board Area': 'North Shore',
+    'Kaipātiki Local Board Area': 'North Shore',
+    'Upper Harbour Local Board Area': 'North Shore',
+    # Central Auckland
+    'Waitematā Local Board Area': 'Central Auckland',
+    'Albert-Eden Local Board Area': 'Central Auckland',
+    'Puketāpapa Local Board Area': 'Central Auckland',
+    # East Auckland
+    'Ōrākei Local Board Area': 'East Auckland',
+    'Maungakiekie-Tāmaki Local Board Area': 'East Auckland',
+    'Howick Local Board Area': 'East Auckland',
+    # South Auckland
+    'Māngere-Ōtāhuhu Local Board Area': 'South Auckland',
+    'Ōtara-Papatoetoe Local Board Area': 'South Auckland',
+    'Manurewa Local Board Area': 'South Auckland',
+    'Papakura Local Board Area': 'South Auckland',
+    # West Auckland
+    'Henderson-Massey Local Board Area': 'West Auckland',
+    'Whau Local Board Area': 'West Auckland',
+    'Waitākere Ranges Local Board Area': 'West Auckland',
+    # Rural Auckland
+    'Rodney Local Board Area': 'Rural Auckland',
+    'Franklin Local Board Area': 'Rural Auckland',
+}
+
+
+def get_region_from_district(district):
+    """Get Auckland major sector from Local Board Area name."""
+    if not district:
+        return ''
+    # Try exact match first
+    if district in LOCAL_BOARD_TO_REGION:
+        return LOCAL_BOARD_TO_REGION[district]
+    # Try partial match (without 'Local Board Area' suffix)
+    for board, region in LOCAL_BOARD_TO_REGION.items():
+        board_name = board.replace(' Local Board Area', '')
+        if board_name in district or district in board_name:
+            return region
+    return ''
+
+
+def export_to_csv(output_path, region=None, school_type=None, limit=1000):
+    """Export school data from API to CSV file.
+    
+    Args:
+        output_path: Path to output CSV file
+        region: Filter by region
+        school_type: Filter by school type
+        limit: Maximum number of records
+    """
+    print(f"Fetching schools from Education Counts API...")
+    if region:
+        print(f"  Filter: Region = {region}")
+    if school_type:
+        print(f"  Filter: School Type = {school_type}")
+    print(f"  Limit: {limit}")
+    
+    schools_data = fetch_schools_from_api(
+        region=region,
+        school_type=school_type,
+        limit=limit
+    )
+    
+    if not schools_data:
+        print("No schools found.")
+        return 0
+    
+    # Ensure directory exists
+    os.makedirs(os.path.dirname(output_path) or '.', exist_ok=True)
+    
+    # Write to CSV
+    fieldnames = ['sch_id', 'sch_name', 'sch_desc', 'sch_addr', 'sch_email', 'sch_logo', 
+                  'sch_eoi', 'sch_decile', 'sch_homepage', 'sch_district', 'sch_region', 'sch_type']
+    
+    with open(output_path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(schools_data)
+    
+    print(f"\nExported {len(schools_data)} schools to {output_path}")
+    return len(schools_data)
+
+
+def map_api_record_to_school(record):
+    """Map API record fields to School model fields.
+    
+    API fields: School_Id, Org_Name, Telephone, Email, URL, Add1_Line1, Add1_Suburb,
+                Add1_City, Org_Type, Definition, Territorial_Authority, EQi_Index, etc.
+    """
+    # Build full address
+    addr_parts = [
+        record.get("Add1_Line1", ""),
+        record.get("Add1_Suburb", ""),
+        record.get("Add1_City", "")
+    ]
+    address = ", ".join(part for part in addr_parts if part)
+    
+    # Parse EQI (Equity Index) - may be a string like "425" or empty
+    eqi_raw = record.get("EQi_Index", "")
+    eqi = None
+    if eqi_raw:
+        try:
+            eqi = int(float(eqi_raw))
+        except (ValueError, TypeError):
+            pass
+    
+    # Build description from school type and definition
+    org_type = record.get("Org_Type", "")
+    definition = record.get("Definition", "")
+    desc = f"{org_type}"
+    if definition:
+        desc = f"{org_type} - {definition}"
+    
+    # Homepage URL
+    homepage = record.get("URL", "")
+    if homepage and not homepage.startswith(("http://", "https://")):
+        homepage = f"https://{homepage}"
+    
+    # Generate logo URL from school website (favicon)
+    logo = ""
+    if homepage:
+        # Try to use favicon from school website
+        logo = f"{homepage.rstrip('/')}/apple-touch-icon.png"
+    
+    district = record.get("Territorial_Authority", "")
+    region = get_region_from_district(district)
+    
+    # Get School ID from API (Ministry of Education unique identifier)
+    school_id = record.get("School_Id", None)
+    if school_id:
+        try:
+            school_id = int(school_id)
+        except (ValueError, TypeError):
+            school_id = None
+    
+    return {
+        'sch_id': school_id,
+        'sch_name': record.get("Org_Name", "Unknown School"),
+        'sch_desc': desc,
+        'sch_addr': address,
+        'sch_email': record.get("Email", ""),
+        'sch_logo': logo,
+        'sch_eoi': eqi,
+        'sch_decile': None,  # Decile no longer used in NZ
+        'sch_homepage': homepage,
+        'sch_district': district,
+        'sch_region': region,
+        'sch_type': org_type,
+    }
+
+
+def load_schools_from_csv(csv_path):
+    """Load school data from a CSV file (fallback for offline use).
+    
+    Args:
+        csv_path: Path to the CSV file
+        
+    Returns:
+        List of dictionaries containing school data
+    """
+    schools = []
+    
+    with open(csv_path, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            # Parse sch_id - may be string or int
+            sch_id = row.get('sch_id', None)
+            if sch_id:
+                try:
+                    sch_id = int(sch_id)
+                except (ValueError, TypeError):
+                    sch_id = None
+            
+            school = {
+                'sch_id': sch_id,
+                'sch_name': row['sch_name'],
+                'sch_desc': row.get('sch_desc', ''),
+                'sch_addr': row.get('sch_addr', ''),
+                'sch_email': row.get('sch_email', ''),
+                'sch_logo': row.get('sch_logo', ''),
+                'sch_eoi': int(row['sch_eoi']) if row.get('sch_eoi') else None,
+                'sch_decile': int(row['sch_decile']) if row.get('sch_decile') else None,
+                'sch_homepage': row.get('sch_homepage', ''),
+                'sch_district': row.get('sch_district', ''),
+                'sch_region': row.get('sch_region', ''),
+                'sch_type': row.get('sch_type', ''),
+            }
+            schools.append(school)
+    
+    return schools
+
+
+def seed_schools(source='api', csv_path=None, force=False, 
+                 region=None, school_type=None, limit=100):
+    """Seed the database with schools from API or CSV.
+    
+    Args:
+        source: Data source - 'api' or 'csv'
+        csv_path: Path to CSV file (for source='csv')
+        force: If True, delete existing schools and re-seed
+        region: Filter by region (API only)
+        school_type: Filter by school type (API only)
+        limit: Maximum schools to fetch (API only)
+        
+    Returns:
+        Number of schools inserted
+    """
+    app = create_app()
+    
+    with app.app_context():
+        # Create tables if they don't exist
+        db.create_all()
+        
+        # Check if schools already exist
+        existing_count = School.query.count()
+        
+        if existing_count > 0 and not force:
+            print(f"Database already has {existing_count} schools. Use --force to re-seed.")
+            return 0
+        
+        if force and existing_count > 0:
+            print(f"Deleting {existing_count} existing schools...")
+            School.query.delete()
+            db.session.commit()
+        
+        # Load schools from selected source
+        if source == 'api':
+            print(f"Fetching schools from Education Counts API...")
+            if region:
+                print(f"  Filter: Region = {region}")
+            if school_type:
+                print(f"  Filter: School Type = {school_type}")
+            print(f"  Limit: {limit}")
+            
+            schools_data = fetch_schools_from_api(
+                region=region,
+                school_type=school_type,
+                limit=limit
+            )
+        else:
+            if csv_path is None:
+                csv_path = DEFAULT_CSV_PATH
+            
+            if not os.path.exists(csv_path):
+                print(f"Error: CSV file not found at {csv_path}")
+                return 0
+            
+            print(f"Loading schools from CSV: {csv_path}")
+            schools_data = load_schools_from_csv(csv_path)
+        
+        if not schools_data:
+            print("No schools found from source.")
+            return 0
+        
+        # Insert schools
+        for school_data in schools_data:
             school = School(
-                sch_name=school_data["sch_name"],
-                sch_desc=school_data["sch_desc"],
-                sch_addr=school_data["sch_addr"],
-                sch_email=school_data["sch_email"],
-                sch_logo=school_data["sch_logo"],
-                sch_eoi=school_data["sch_eoi"],
-                sch_decile=school_data["sch_decile"],
-                sch_homepage=school_data["sch_homepage"],
-                sch_district=school_data.get("sch_district", "")
+                sch_id=school_data.get('sch_id'),
+                sch_name=school_data['sch_name'],
+                sch_desc=school_data['sch_desc'],
+                sch_addr=school_data['sch_addr'],
+                sch_email=school_data['sch_email'],
+                sch_logo=school_data['sch_logo'],
+                sch_eoi=school_data['sch_eoi'],
+                sch_decile=school_data['sch_decile'],
+                sch_homepage=school_data['sch_homepage'],
+                sch_district=school_data['sch_district'],
+                sch_region=school_data.get('sch_region', ''),
+                sch_type=school_data.get('sch_type', ''),
             )
             db.session.add(school)
         
         db.session.commit()
-        print(f"Successfully inserted {len(dummy_schools)} schools into the database.")
+        print(f"\nSuccessfully inserted {len(schools_data)} schools.")
+        
+        # Display inserted schools
+        schools = School.query.all()
+        print("\nSchools in database:")
+        for s in schools:
+            print(f"  {s.sch_id}: {s.sch_name} - {s.sch_region}")
+        
+        return len(schools_data)
+
+
+if __name__ == '__main__':
+    import argparse
     
-    # Display inserted schools
-    schools = School.query.all()
-    print("\nSchools in database:")
-    for s in schools:
-        print(f"  {s.sch_id}: {s.sch_name} - {s.sch_email}")
+    parser = argparse.ArgumentParser(
+        description='Seed school data from Education Counts API or CSV file',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Fetch 50 Auckland primary schools from API
+  python seed_schools.py --region Auckland --type "Full Primary" --limit 50
+
+  # Fetch 100 schools from any region
+  python seed_schools.py --limit 100
+
+  # Use local CSV file instead of API
+  python seed_schools.py --source csv --csv data/schools.csv
+
+  # Force re-seed (delete existing data)
+  python seed_schools.py --force --region Auckland --limit 30
+  
+  # Export Auckland Full Primary schools to CSV (without seeding database)
+  python seed_schools.py --export data/schools.csv --region Auckland --type "Full Primary" --limit 1000
+        """
+    )
+    
+    parser.add_argument('--source', '-s', type=str, default='api',
+                        choices=['api', 'csv'],
+                        help='Data source: api or csv (default: api)')
+    parser.add_argument('--csv', '-c', type=str, default=None,
+                        help='Path to CSV file (for --source csv)')
+    parser.add_argument('--force', '-f', action='store_true',
+                        help='Force re-seed (delete existing data)')
+    parser.add_argument('--region', '-r', type=str, default=None,
+                        help='Filter by region (e.g., "Auckland", "Wellington")')
+    parser.add_argument('--type', '-t', type=str, default=None,
+                        help='Filter by school type (e.g., "Full Primary", "Contributing")')
+    parser.add_argument('--limit', '-l', type=int, default=100,
+                        help='Maximum number of schools to fetch (default: 100)')
+    parser.add_argument('--export', '-e', type=str, default=None,
+                        help='Export API data to CSV file instead of seeding database')
+    
+    args = parser.parse_args()
+    
+    # Export mode: fetch from API and write to CSV
+    if args.export:
+        export_to_csv(
+            output_path=args.export,
+            region=args.region,
+            school_type=args.type,
+            limit=args.limit
+        )
+    else:
+        # Seed mode: insert into database
+        seed_schools(
+            source=args.source,
+            csv_path=args.csv,
+            force=args.force,
+            region=args.region,
+            school_type=args.type,
+            limit=args.limit
+        )
