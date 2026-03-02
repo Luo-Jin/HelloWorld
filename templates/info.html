@@ -98,6 +98,7 @@
                     <td>{% if school.sch_logo %}<img src="{{ school.sch_logo }}" alt="" class="school-logo">{% else %}<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z'/%3E%3C/svg%3E" alt="" class="school-logo">{% endif %}</td>
                     <td class="school-name">{{ school.sch_name }}</td>
                     <td class="school-type">{{ school.sch_type }}</td>
+                    <td style="text-align:center;"><input type="checkbox" disabled {% if school.tour %}checked{% endif %}></td>
                     <td>{{ school.sch_eoi }}</td>
                     <td>{% if school.sch_homepage %}<a href="{{ school.sch_homepage }}" class="homepage-link" target="_blank">↗</a>{% endif %}</td>
                 </tr>
