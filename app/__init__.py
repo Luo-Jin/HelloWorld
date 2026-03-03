@@ -54,6 +54,7 @@ def create_app(test_config=None):
         from .models import School
         region = request.args.get('region', '')
         school_type = request.args.get('school_type', '')
+        tour_param = request.args.get('tour', '')
         
         query = School.query
         
@@ -62,6 +63,12 @@ def create_app(test_config=None):
         
         if school_type:
             query = query.filter(School.sch_type == school_type)
+        
+        if tour_param:
+            if tour_param.lower() in ['1','true','yes','y']:
+                query = query.filter(School.tour.is_(True))
+            elif tour_param.lower() in ['0','false','no','n']:
+                query = query.filter(School.tour.is_(False))
         
         schools = query.all()
         return render_template('info.html', schools=schools)

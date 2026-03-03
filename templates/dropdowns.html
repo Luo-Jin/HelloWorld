@@ -77,17 +77,28 @@
                 {% endfor %}
             </select>
         </div>
+        
+        <div class="dropdown-wrapper">
+            <label for="tourFilter">Tour</label>
+            <select id="tourFilter" name="tourFilter" onchange="applyFilters()">
+                <option value="">Any</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
     </div>
     <script>
         function applyFilters() {
             var region = document.getElementById('category').value;
             var schoolType = document.getElementById('schoolType').value;
+                var tour = document.getElementById('tourFilter').value;
             
-            window.parent.postMessage({
-                type: 'applyFilters',
-                region: region,
-                schoolType: schoolType
-            }, '*');
+                window.parent.postMessage({
+                    type: 'applyFilters',
+                    region: region,
+                    schoolType: schoolType,
+                    tour: tour
+                }, '*');
         }
     </script>
 </body>
