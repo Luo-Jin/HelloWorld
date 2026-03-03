@@ -61,6 +61,9 @@
                 if (event.data.schoolType) {
                     params.push('school_type=' + encodeURIComponent(event.data.schoolType));
                 }
+                if (event.data.tour) {
+                    params.push('tour=' + encodeURIComponent(event.data.tour));
+                }
                 
                 if (params.length > 0) {
                     infoFrame.src = '/info?' + params.join('&');
