@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Students</title>
+    <style>
+        body{font-family:Arial, sans-serif;padding:20px}
+        table{width:100%;border-collapse:collapse}
+        th,td{padding:8px 10px;border-bottom:1px solid #eee;text-align:left}
+        th{background:#667eea;color:#fff}
+        a.button{display:inline-block;padding:6px 10px;background:#667eea;color:#fff;border-radius:4px;text-decoration:none}
+        .actions a{margin-right:8px;color:#667eea;text-decoration:none}
+        form.inline{display:inline}
+    </style>
+</head>
+<body>
+    <h1>Students</h1>
+    <p><a class="button" href="/students/new">New student</a></p>
+    <table>
+        <thead>
+            <tr><th>Name</th><th>Birth</th><th>Gender</th><th>Email</th><th>Phone</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+            {% for s in students %}
+            <tr>
+                <td>{{ s.stu_name }}</td>
+                <td>{% if s.stu_birth %}{{ s.stu_birth.isoformat() }}{% endif %}</td>
+                <td>{{ s.stu_gender or '' }}</td>
+                <td>{{ s.stu_email or '' }}</td>
+                <td>{{ s.stu_phone or '' }}</td>
+                <td class="actions">
+                    <a href="/students/{{ s.stu_id }}/edit">Edit</a>
+                    <form class="inline" method="post" action="/students/{{ s.stu_id }}/delete" onsubmit="return confirm('Delete student?');">
+                        <button type="submit" style="background:none;border:none;color:#c33;cursor:pointer">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
