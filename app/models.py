@@ -24,6 +24,19 @@ class School(db.Model):
     sch_region = db.Column(db.String(50), nullable=True)  # Auckland major sector (North Shore, Central, East, South, West, Rural)
     sch_type = db.Column(db.String(100), nullable=True)  # School type (e.g., Full Primary, Contributing, Secondary)
     tour = db.Column(db.Boolean, nullable=False, default=False)
+    tour = db.Column(db.Boolean, nullable=False, default=False)
 
     def __repr__(self):
         return f'<School {self.sch_name}>'
+
+
+class Student(db.Model):
+    stu_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    stu_name = db.Column(db.String(200), nullable=False)
+    stu_birth = db.Column(db.Date, nullable=True)
+    stu_gender = db.Column(db.String(20), nullable=True)
+    stu_email = db.Column(db.String(120), nullable=True)
+    stu_phone = db.Column(db.String(50), nullable=True)
+
+    def __repr__(self):
+        return f'<Student {self.stu_name}>'
