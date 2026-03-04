@@ -234,10 +234,12 @@ def create_app(test_config=None):
         return render_template('login.html')
 
     @app.route('/index')
+    @login_required
     def index():
         return render_template('index.html')
 
     @app.route('/logout')
+    @login_required
     def logout():
         logout_user()
         return redirect(url_for('home'))
@@ -306,10 +308,12 @@ def create_app(test_config=None):
         return redirect(url_for('home'))
 
     @app.route('/banner')
+    @login_required
     def banner():
         return render_template('banner.html')
 
     @app.route('/dropdowns')
+    @login_required
     def dropdowns():
         from .models import School
         regions = db.session.query(School.sch_region).distinct().filter(School.sch_region.isnot(None)).order_by(School.sch_region).all()
@@ -352,6 +356,7 @@ def create_app(test_config=None):
         return redirect(url_for('admin_users'))
 
     @app.route('/info')
+    @login_required
     def info():
         from .models import School
         region = request.args.get('region', '')
