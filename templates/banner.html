@@ -61,7 +61,7 @@
                 </div>
                 <div style="position:absolute;right:16px;bottom:16px">
                     {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+                        <a href="{{ url_for('logout') }}" class="logout-btn" onclick="fetch('{{ url_for('logout') }}', {method: 'GET', credentials: 'include'}).then(() => { window.top.location.href = '{{ url_for('home') }}'; }); return false;">Logout</a>
                     {% endif %}
                 </div>
         </div>
