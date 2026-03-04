@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>User Management</h1>
+  <p>Only the `admin` user may access this page.</p>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Username</th><th>Email</th><th>Confirmed</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+    {% for u in users %}
+      <tr>
+        <td>{{ u.id }}</td>
+        <td>{{ u.username }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ 'Yes' if (u.confirmed|default(False)) else 'No' }}</td>
+        <td>
+          {% if u.username != 'admin' %}
+          <form method="post" action="{{ url_for('admin_delete_user', user_id=u.id) }}" style="display:inline">
+            <button type="submit" onclick="return confirm('Delete user {{ u.username }}?')">Delete</button>
+          </form>
+          {% else %}
+            —
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

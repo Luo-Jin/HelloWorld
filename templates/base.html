@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{% block title %}Site{% endblock %}</title>
+    <style>
+      body{font-family:Arial,Helvetica,sans-serif;background:#f7f8fb;color:#111}
+      .nav{background:#2b6cb0;color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+      .nav a{color:#fff;margin-left:12px;text-decoration:none}
+      .container{max-width:900px;margin:28px auto;padding:0 16px}
+      table{width:100%;border-collapse:collapse}
+      th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
+      button{background:#c53030;color:#fff;border:none;padding:6px 10px;border-radius:4px}
+    </style>
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <header class="nav">
+      <div><strong>My App</strong></div>
+      <div>
+        {% if current_user.is_authenticated %}
+          Hello, {{ current_user.username }}
+          {% if current_user.username == 'admin' %}
+            <a href="{{ url_for('admin_users') }}">Admin</a>
+          {% endif %}
+          <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+          <a href="{{ url_for('home') }}">Login</a>
+          <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+      </div>
+    </header>
+    <main class="container">
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>

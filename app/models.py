@@ -1,10 +1,23 @@
 from . import db
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(200), nullable=True)
+    confirmed = db.Column(db.Boolean, nullable=False, default=False)
+    confirmed_at = db.Column(db.DateTime, nullable=True)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        if not self.password_hash:
+            return False
+        return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -29,14 +42,3 @@ class School(db.Model):
     def __repr__(self):
         return f'<School {self.sch_name}>'
 
-
-class Student(db.Model):
-    stu_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    stu_name = db.Column(db.String(200), nullable=False)
-    stu_birth = db.Column(db.Date, nullable=True)
-    stu_gender = db.Column(db.String(20), nullable=True)
-    stu_email = db.Column(db.String(120), nullable=True)
-    stu_phone = db.Column(db.String(50), nullable=True)
-
-    def __repr__(self):
-        return f'<Student {self.stu_name}>'

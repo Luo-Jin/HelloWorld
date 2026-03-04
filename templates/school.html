@@ -81,6 +81,35 @@
 </head>
 <body>
     <div class="info-container">
+        <!-- Dropdown filters (combined) -->
+        <div style="margin-bottom:12px; display:flex; gap:12px; align-items:center;">
+            <div>
+                <label for="region">Region</label>
+                <select id="region" name="region" onchange="applyFilters()">
+                  <option value="">All Regions</option>
+                  {% for region in regions %}
+                  <option value="{{ region }}" {% if region==selected_region %}selected{% endif %}>{{ region }}</option>
+                  {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="schoolType">School Type</label>
+                <select id="schoolType" name="school_type" onchange="applyFilters()">
+                  <option value="">All Types</option>
+                  {% for type in school_types %}
+                  <option value="{{ type }}" {% if type==selected_type %}selected{% endif %}>{{ type }}</option>
+                  {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="tourFilter">Tour</label>
+                <select id="tourFilter" name="tour" onchange="applyFilters()">
+                  <option value="" {% if not selected_tour %}selected{% endif %}>Any</option>
+                  <option value="yes" {% if selected_tour=='yes' %}selected{% endif %}>Yes</option>
+                  <option value="no" {% if selected_tour=='no' %}selected{% endif %}>No</option>
+                </select>
+            </div>
+        </div>
         {% if schools %}
         <table>
             <thead>
@@ -112,5 +141,18 @@
         </div>
         {% endif %}
     </div>
+    <script>
+        function applyFilters(){
+            var region = document.getElementById('region').value;
+            var schoolType = document.getElementById('schoolType').value;
+            var tour = document.getElementById('tourFilter').value;
+            var params = [];
+            if(region) params.push('region='+encodeURIComponent(region));
+            if(schoolType) params.push('school_type='+encodeURIComponent(schoolType));
+            if(tour) params.push('tour='+encodeURIComponent(tour));
+            var q = params.length?('?'+params.join('&')):'';
+            window.location = window.location.pathname + q;
+        }
+    </script>
 </body>
 </html>

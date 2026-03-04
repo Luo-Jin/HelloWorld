@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login</title>
+  <style>
+    body{font-family:Arial, sans-serif;background:#f7f8fb;padding:24px}
+    .card{background:#fff;padding:20px;border-radius:8px;max-width:420px;margin:40px auto;box-shadow:0 6px 18px rgba(22,27,44,0.06)}
+    label{display:block;margin-top:12px;font-size:0.9rem}
+    input{padding:10px;width:100%;box-sizing:border-box;border:1px solid #ddd;border-radius:6px}
+    button{margin-top:16px;padding:10px 14px;background:#2b6cb0;color:#fff;border:none;border-radius:6px}
+    .flash{color:#b00020;margin-bottom:8px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Login</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">
+          {% for m in messages %} <div>{{ m }}</div> {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    <form method="post" action="/">
+      <label for="stu_name">Username</label>
+      <input id="stu_name" name="stu_name" autocomplete="username" />
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" />
+      <div>
+        <button type="submit">Login</button>
+        <a href="/index" style="margin-left:12px">Continue as guest</a>
+        <a href="/register" style="margin-left:12px">Register</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

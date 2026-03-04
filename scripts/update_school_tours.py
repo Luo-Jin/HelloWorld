@@ -5,8 +5,9 @@ import requests
 from urllib.parse import urljoin
 from app import create_app, db
 from app.models import School
+from sqlalchemy import text
 
-KEYWORDS=['study tour','study tours','school tour','school tours','international students','visits','visitor','education tour']
+KEYWORDS=['study tour','study tours','school tour','school tours','education tour']
 HEADERS={'User-Agent':'Mozilla/5.0 (compatible; study-tour-bot/1.0; +https://github.com)'}
 RATE=1.0
 TIMEOUT=10
@@ -60,6 +61,16 @@ if __name__=='__main__':
     with app.app_context():
         # ensure table has new column
         db.create_all()
+        # Ensure 'tour' column exists (SQLite won't add columns via create_all on existing tables)
+        try:
+            res = db.session.execute(text("PRAGMA table_info('school')")).fetchall()
+            cols = [r[1] for r in res]
+            if 'tour' not in cols:
+                print("Adding 'tour' column to school table...")
+                db.session.execute(text("ALTER TABLE school ADD COLUMN tour BOOLEAN NOT NULL DEFAULT 0"))
+                db.session.commit()
+        except Exception as e:
+            print('Could not ensure tour column exists:', e)
 
         # Query primary schools (use either sch_desc or sch_type)
         schools = School.query.all()
@@ -70,9 +81,6 @@ if __name__=='__main__':
         for s in schools:
             idx += 1
             stype = (s.sch_desc or '') + ' ' + (s.sch_type or '')
-            if 'primary' not in stype.lower():
-                print(f'[{idx}/{total}] Skipping non-primary: {s.sch_name}')
-                continue
 
             if args.limit and processed >= args.limit:
                 print('Limit reached; stopping.')

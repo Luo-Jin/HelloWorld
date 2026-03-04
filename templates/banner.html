@@ -39,10 +39,13 @@
     </style>
 </head>
 <body>
-    <div class="banner">
-        <!-- Replace with your banner image -->
-        <!-- <img src="/static/banner.jpg" alt="Banner"> -->
-        <span class="banner-text">Welcome to Our Site</span>
-    </div>
+        <div class="banner">
+                <span class="banner-text">Welcome to Our Site</span>
+                <div style="position:absolute;right:16px;top:12px">
+                    {% if current_user.is_authenticated and current_user.username == 'admin' %}
+                        <a href="{{ url_for('admin_users') }}" style="color:white; background:rgba(0,0,0,0.18); padding:8px 12px; border-radius:6px; text-decoration:none">Admin</a>
+                    {% endif %}
+                </div>
+        </div>
 </body>
 </html>

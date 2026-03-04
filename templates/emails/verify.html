@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Verify your email</title>
+    <style>
+      body{font-family:Arial,Helvetica,sans-serif;background:#f7f8fb;padding:24px}
+      .card{background:#ffffff;padding:20px;border-radius:8px;max-width:600px;margin:20px auto;color:#111}
+      a.button{display:inline-block;padding:10px 16px;background:#2b6cb0;color:#fff;border-radius:6px;text-decoration:none}
+      p.small{color:#666;font-size:0.9rem}
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2>Confirm your email</h2>
+      <p>Hello,</p>
+      <p>Thanks for creating an account. Please confirm your email by clicking the button below:</p>
+      <p><a class="button" href="{{ link }}">Verify email address</a></p>
+      <p class="small">If the button doesn't work, copy and paste this link into your browser:</p>
+      <p class="small"><a href="{{ link }}">{{ link }}</a></p>
+      <p class="small">If you did not create this account, you can ignore this message.</p>
+    </div>
+  </body>
+</html>
