@@ -412,7 +412,8 @@ def create_app(test_config=None):
         region = request.args.get('region', '')
         school_type = request.args.get('school_type', '')
         tour_param = request.args.get('tour', '')
-        per_page = 13
+        search = request.args.get('search', '').strip()
+        per_page = 15
         
         query = School.query
         
@@ -427,6 +428,13 @@ def create_app(test_config=None):
                 query = query.filter(School.tour.is_(True))
             elif tour_param.lower() in ['0','false','no','n']:
                 query = query.filter(School.tour.is_(False))
+        
+        # Server-side search for school name
+        if search:
+            # Split search into words and match all of them
+            search_terms = search.lower().split()
+            for term in search_terms:
+                query = query.filter(School.sch_name.ilike(f'%{term}%'))
         
         # Paginate schools
         paginated = query.order_by(School.sch_id).paginate(page=page, per_page=per_page, error_out=False)
@@ -447,6 +455,8 @@ def create_app(test_config=None):
                 'sch_district': s.sch_district or '',
                 'sch_decile': s.sch_decile or '',
                 'sch_desc': s.sch_desc or '',
+                'latitude': s.latitude,
+                'longitude': s.longitude,
             })
         
         return {
@@ -807,6 +817,59 @@ def create_app(test_config=None):
         except Exception as e:
             db.session.rollback()
             return {'status': 'error', 'message': 'Failed to delete student'}, 500
+
+    @app.route('/api/geocode', methods=['GET'])
+    @login_required
+    def api_geocode():
+        """Server-side proxy for geocoding to avoid CORS issues."""
+        import requests as http_requests
+        
+        query = request.args.get('q', '')
+        if not query:
+            return {'status': 'error', 'message': 'No query provided'}, 400
+        
+        try:
+            nominatim_url = f"https://nominatim.openstreetmap.org/search"
+            params = {
+                'q': query,
+                'format': 'json',
+                'limit': 1,
+                'countrycodes': 'nz'
+            }
+            headers = {
+                'User-Agent': 'SchoolInfoApp/1.0 (school-info-application)'
+            }
+            
+            response = http_requests.get(nominatim_url, params=params, headers=headers, timeout=10)
+            response.raise_for_status()
+            
+            data = response.json()
+            return {'status': 'success', 'results': data}
+        except Exception as e:
+            return {'status': 'error', 'message': str(e)}, 500
+
+    @app.route('/api/school/<int:school_id>/coordinates', methods=['POST'])
+    @login_required
+    def api_save_coordinates(school_id):
+        """Save geocoded coordinates for a school."""
+        from .models import School
+        
+        school = School.query.get(school_id)
+        if not school:
+            return {'status': 'error', 'message': 'School not found'}, 404
+        
+        data = request.get_json()
+        if not data:
+            return {'status': 'error', 'message': 'No data provided'}, 400
+        
+        try:
+            school.latitude = data.get('latitude')
+            school.longitude = data.get('longitude')
+            db.session.commit()
+            return {'status': 'success', 'message': 'Coordinates saved'}
+        except Exception as e:
+            db.session.rollback()
+            return {'status': 'error', 'message': str(e)}, 500
 
     # student CRUD pages removed
 

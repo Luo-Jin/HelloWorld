@@ -24,7 +24,7 @@
             margin: 0;
             display: flex;
             flex-direction: row;
-            min-height: 100vh;
+            height: 100vh;
             gap: 20px;
             padding: 10px;
         }
@@ -33,13 +33,47 @@
             display: flex;
             flex-direction: column;
             min-width: 0;
+            height: 100%;
+            gap: 0;
+        }
+        .filter-row {
+            flex: 0 0 15%;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-start;
+            padding: 0;
+            margin: 15px 0 4px 0;
+        }
+        .filter-row-group {
+            display: flex;
+            flex-direction: row;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            width: 100%;
+        }
+        .filter-row-group > div {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 4px;
+        }
+        .list-row {
+            flex: 0 0 85%;
+            display: flex;
+            flex-direction: column;
             min-height: 0;
+            gap: 2px;
+            position: relative;
         }
         .right-column {
             flex: 0 0 60%;
             display: flex;
             flex-direction: column;
             min-width: 0;
+            height: 100%;
             background-color: #f9f9f9;
             border-radius: 5px;
             padding: 20px;
@@ -58,10 +92,10 @@
             font-size: 0.85rem;
         }
         .table-wrapper {
-            max-height: 77vh;
+            flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            margin-top: 15px;
+            min-height: 0;
             scrollbar-width: none; /* Firefox */
         }
         .table-wrapper::-webkit-scrollbar {
@@ -111,6 +145,7 @@
         .school-details {
             display: flex;
             flex-direction: column;
+            width: 100%;
             height: 100%;
             gap: 0;
             min-height: 0;
@@ -124,19 +159,33 @@
             font-size: 1rem;
         }
         .school-details-top {
-            flex: 0 0 auto;
+            flex: 0 0 15%;
+            display: flex;
+            gap: 0;
+            margin-bottom: 0;
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #f9f9f9;
+            padding-bottom: 8px;
+            overflow-y: auto;
+        }
+        .school-details-bottom {
+            flex: 0 0 85%;
             display: flex;
             gap: 15px;
-            margin-bottom: 15px;
+            min-height: 0;
         }
         .stats-column-left {
-            flex: 0 0 280px;
+            flex: 0 0 300px;
             display: flex;
             flex-direction: column;
             min-width: 0;
+            gap: 12px;
         }
         .stats-column-right {
-            flex: 0 0 280px;
+            flex: 1;
             display: flex;
             flex-direction: column;
             min-width: 0;
@@ -153,13 +202,13 @@
             border: 1px solid #e8ecf1;
             padding: 10px;
             overflow: hidden;
-            margin-bottom: 12px;
+            max-height: 280px;
         }
         .ethnic-chart-container::before {
             content: 'Ethnic Distribution';
             font-size: 0.75rem;
             font-weight: 700;
-            color: #667eea;
+            color: #000000;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 8px;
@@ -178,6 +227,7 @@
             display: flex;
             flex-direction: column;
             min-height: 0;
+            height: 100%;
         }
         .school-details-header {
             margin-bottom: 10px;
@@ -242,46 +292,72 @@
             flex-shrink: 1;
         }
         .school-info-wrapper {
-            flex: 0 0 auto;
+            width: 100%;
             display: flex;
             flex-direction: column;
-            background: white;
-            border-radius: 6px;
-            padding: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0;
             min-height: 0;
-            max-height: 250px;
             overflow-y: auto;
+        }
+        .school-info-row-1 {
+            padding: 8px 8px;
+            flex-shrink: 0;
+        }
+        .school-info-row-1 h2 {
+            font-size: 1.1rem;
+            color: #2d3748;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+        }
+        .school-info-row-2 {
+            padding: 6px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .school-info-item {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+        .school-info-label {
+            font-weight: 700;
+            color: #8b0000;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            min-width: auto;
+            flex-shrink: 0;
+            font-size: 0.75rem;
+        }
+        .school-info-detail {
+            color: #2d3748;
+            font-weight: 600;
+            word-break: break-word;
+            flex: 1;
         }
         .school-map-container {
             flex: 1;
             display: flex;
             flex-direction: column;
-            min-height: 200px;
-            margin-top: 12px;
-            padding-top: 0;
+            min-height: 0;
+            margin: 0;
+            padding: 0;
             border-top: none;
-        }
-        .school-map-label {
-            font-weight: 600;
-            color: #667eea;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            display: block;
-            flex-shrink: 0;
         }
         #school-map {
             width: 100%;
-            flex: 1;
+            height: 100%;
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             z-index: 1;
-            min-height: 0;
         }
         .demographics-container {
-            flex: 0 0 auto;
+            flex: 1;
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -291,10 +367,11 @@
             box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1), 0 1px 3px rgba(0,0,0,0.08);
             border: 1px solid #e8ecf1;
             overflow-y: auto;
+            min-height: 0;
         }
         .demographics-title {
             font-weight: 700;
-            color: #667eea;
+            color: #000000;
             font-size: 0.75rem;
             text-transform: uppercase;
             margin-bottom: 8px;
@@ -317,7 +394,7 @@
             border-bottom: none;
         }
         .demo-kv-label {
-            color: #667eea;
+            color: #8b0000;
             font-weight: 700;
             text-transform: uppercase;
             font-size: 0.7rem;
@@ -332,7 +409,7 @@
         }
         .demo-kv-bar-fill {
             height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #8b9cff 100%);
+            background: #404040;
             border-radius: 3px;
             transition: width 0.3s ease;
         }
@@ -401,11 +478,16 @@
         }
         .pagination {
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             gap: 5px;
-            margin-top: 5px;
-            padding-top: 10px;
+            flex: 0 0 auto;
+            padding: 0;
+            margin: 0 0 2px 0;
             flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 5;
         }
         .pagination button, .pagination span {
             padding: 6px 10px;
@@ -437,39 +519,43 @@
 <body>
     <div class="info-container">
         <div class="left-column">
-        <!-- Dropdown filters (combined) -->
-        <div style="margin-top:15px; margin-bottom:4px; display:flex; gap:6px; align-items:center; flex-wrap: wrap;">
-            <div>
-                <label for="searchSchool">Search</label>
-                <input type="text" id="searchSchool" placeholder="School name" onkeyup="applyFilters()">
+        <!-- Filter Row -->
+        <div class="filter-row">
+            <!-- Filter Row Group 1: Region -->
+            <div class="filter-row-group">
+                <div>
+                    <label for="region">Region</label>
+                    <select id="region" name="region" onchange="applyFilters()">
+                      <option value="">All Regions</option>
+                      {% for region in regions %}
+                      <option value="{{ region }}" {% if region==selected_region %}selected{% endif %}>{{ region }}</option>
+                      {% endfor %}
+                    </select>
+                </div>
             </div>
-            <div>
-                <label for="region">Region</label>
-                <select id="region" name="region" onchange="applyFilters()">
-                  <option value="">All Regions</option>
-                  {% for region in regions %}
-                  <option value="{{ region }}" {% if region==selected_region %}selected{% endif %}>{{ region }}</option>
-                  {% endfor %}
-                </select>
+            <!-- Filter Row Group 2: School Type -->
+            <div class="filter-row-group">
+                <div>
+                    <label for="schoolType">School Type</label>
+                    <select id="schoolType" name="school_type" onchange="applyFilters()">
+                      <option value="">All Types</option>
+                      {% for type in school_types %}
+                      <option value="{{ type }}" {% if type==selected_type %}selected{% endif %}>{{ type }}</option>
+                      {% endfor %}
+                    </select>
+                </div>
             </div>
-            <div>
-                <label for="schoolType">School Type</label>
-                <select id="schoolType" name="school_type" onchange="applyFilters()">
-                  <option value="">All Types</option>
-                  {% for type in school_types %}
-                  <option value="{{ type }}" {% if type==selected_type %}selected{% endif %}>{{ type }}</option>
-                  {% endfor %}
-                </select>
-            </div>
-            <div>
-                <label for="tourFilter">Tour</label>
-                <select id="tourFilter" name="tour" onchange="applyFilters()">
-                  <option value="" {% if not selected_tour %}selected{% endif %}>Any</option>
-                  <option value="yes" {% if selected_tour=='yes' %}selected{% endif %}>Yes</option>
-                  <option value="no" {% if selected_tour=='no' %}selected{% endif %}>No</option>
-                </select>
+            <!-- Filter Row Group 3: Search -->
+            <div class="filter-row-group">
+                <div>
+                    <label for="searchSchool">Search</label>
+                    <input type="text" id="searchSchool" placeholder="School name" onkeyup="debouncedSearch()">
+                </div>
             </div>
         </div>
+        <!-- List Row -->
+        <div class="list-row">
+        <div class="pagination" id="pagination-controls"></div>
         {% if schools %}
         <div class="table-wrapper">
         <table>
@@ -479,22 +565,21 @@
                     <th>School</th>
                     <th>Type</th>
                     <th>EOI</th>
-                    <th>Link</th>
                 </tr>
             </thead>
             <tbody id="schools-list">
                 <tr>
-                    <td colspan="5" style="text-align: center; padding: 40px; color: #999;">Loading schools...</td>
+                    <td colspan="4" style="text-align: center; padding: 40px; color: #999;">Loading schools...</td>
                 </tr>
             </tbody>
         </table>
         </div>
-        <div class="pagination" id="pagination-controls"></div>
         {% else %}
         <div class="no-data">
             <p>No schools found in the database.</p>
         </div>
         {% endif %}
+        </div>
         </div>
         <div class="right-column" id="right-column">
             <div class="school-details-empty">Select a school to view details</div>
@@ -505,30 +590,54 @@
         let totalPages = 1;
         let allSchools = [];
         let selectedSchoolId = null;
+        let searchTimeout = null;
+
+        // Debounced search - waits 300ms after user stops typing
+        function debouncedSearch() {
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
+            searchTimeout = setTimeout(() => {
+                applyFilters();
+            }, 300);
+        }
 
         function fuzzyMatch(str, pattern) {
-            const patternLower = pattern.toLowerCase();
+            if (!pattern || !str) return true;
+            
+            const patternLower = pattern.toLowerCase().trim();
             const strLower = str.toLowerCase();
+            
+            // Direct substring match (most intuitive)
+            if (strLower.includes(patternLower)) {
+                return true;
+            }
+            
+            // Word-based match: all words in pattern must appear somewhere in str
+            const words = patternLower.split(/\s+/).filter(w => w.length > 0);
+            if (words.length > 1) {
+                const allWordsMatch = words.every(word => strLower.includes(word));
+                if (allWordsMatch) return true;
+            }
+            
+            // Sequential character fuzzy match (original behavior)
             let patternIdx = 0;
-            for (let i = 0; i < strLower.length; i++) {
+            for (let i = 0; i < strLower.length && patternIdx < patternLower.length; i++) {
                 if (strLower[i] === patternLower[patternIdx]) {
                     patternIdx++;
                 }
-                if (patternIdx === pattern.length) {
-                    return true;
-                }
             }
-            return patternIdx === pattern.length;
+            return patternIdx === patternLower.length;
         }
 
         function getFilterParams() {
             const region = document.getElementById('region').value;
             const schoolType = document.getElementById('schoolType').value;
-            const tour = document.getElementById('tourFilter').value;
+            const search = document.getElementById('searchSchool').value.trim();
             return {
                 region: region,
                 school_type: schoolType,
-                tour: tour
+                search: search
             };
         }
 
@@ -558,22 +667,17 @@
         function displaySchools(schools) {
             allSchools = schools;
             const schoolsList = document.getElementById('schools-list');
-            const search = document.getElementById('searchSchool').value;
             
-            let filteredSchools = schools;
-            if (search) {
-                filteredSchools = schools.filter(school => fuzzyMatch(school.sch_name, search));
-            }
-            
+            // Server-side search now handles filtering, just display results
             schoolsList.innerHTML = '';
             
-            if (filteredSchools.length === 0) {
-                schoolsList.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: #999;">No schools found matching filters.</td></tr>';
+            if (schools.length === 0) {
+                schoolsList.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px; color: #999;">No schools found matching filters.</td></tr>';
                 document.getElementById('pagination-controls').innerHTML = '';
                 return;
             }
             
-            filteredSchools.forEach(school => {
+            schools.forEach(school => {
                 const row = document.createElement('tr');
                 row.dataset.schoolId = school.sch_id;
                 
@@ -585,14 +689,12 @@
                 }
                 
                 const checkboxChecked = school.tour ? 'checked' : '';
-                const homepageLink = school.sch_homepage ? `<a href="${school.sch_homepage}" class="homepage-link" target="_blank">↗</a>` : '';
                 
                 row.innerHTML = `
                     <td>${logoHtml}</td>
                     <td class="school-name">${school.sch_name}</td>
                     <td class="school-type">${school.sch_type}</td>
                     <td>${school.sch_eoi}</td>
-                    <td>${homepageLink}</td>
                 `;
                 
                 row.addEventListener('click', () => selectSchool(school.sch_id, school));
@@ -600,10 +702,10 @@
             });
             
             // Auto-select first row
-            if (filteredSchools.length > 0) {
+            if (schools.length > 0) {
                 const firstRow = schoolsList.querySelector('tr');
                 if (firstRow) {
-                    const firstSchool = filteredSchools[0];
+                    const firstSchool = schools[0];
                     selectSchool(firstSchool.sch_id, firstSchool);
                 }
             }
@@ -672,36 +774,35 @@
         function displaySchoolDetails(school) {
             const rightColumn = document.getElementById('right-column');
             
-            const schoolAddress = school.sch_addr ?
-                `<div class="detail-item">
-                    <div class="detail-label">Address</div>
-                    <div class="detail-value">${school.sch_addr}</div>
-                </div>` : '';
-            
-            const schoolWebsite = school.sch_homepage ?
-                `<div class="detail-item">
-                    <div class="detail-label">Website</div>
-                    <div class="detail-value"><a href="${school.sch_homepage}" target="_blank" class="detail-link">${school.sch_homepage}</a></div>
-                </div>` : '';
-            
-            const schoolRegion = school.sch_region ?
-                `<div class="detail-item">
-                    <div class="detail-label">Region</div>
-                    <div class="detail-value">${school.sch_region}</div>
-                </div>` : '';
-            
-            const schoolEOI = school.sch_eoi ?
-                `<div class="detail-item">
-                    <div class="detail-label">Equity Index (EOI)</div>
-                    <div class="detail-value">${school.sch_eoi}</div>
-                </div>` : '';
-            
             // Build the ethnic chart image URL
             const ethnicChartUrl = `/api/school/${school.sch_id}/ethnic-chart`;
+            
+            // Create display values
+            const addressDisplay = school.sch_addr ? `${school.sch_addr}` : 'N/A';
+            const websiteDisplay = school.sch_homepage ? 
+                `<a href="${school.sch_homepage}" target="_blank" style="color: #00008b; text-decoration: underline; font-style: italic;">${school.sch_homepage}</a>` : 'N/A';
             
             rightColumn.innerHTML = `
                 <div class="school-details">
                     <div class="school-details-top">
+                        <div class="school-info-wrapper">
+                            <div class="school-info-row-1">
+                                <h2>${school.sch_name}</h2>
+                            </div>
+                            <div class="school-info-row-2">
+                                <div class="school-info-item">
+                                    <span class="school-info-label">Address:</span>
+                                    <span class="school-info-detail">${addressDisplay}</span>
+                                </div>
+                                <div class="school-info-item">
+                                    <span class="school-info-label">Website:</span>
+                                    <span class="school-info-detail">${websiteDisplay}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="school-details-bottom">
                         <div class="stats-column-left">
                             <div class="ethnic-chart-container">
                                 <img src="${ethnicChartUrl}" alt="Ethnic Distribution" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext x=%2250%22 y=%2250%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2214%22 fill=%22%23999%22%3ENo Chart Data%3C/text%3E%3C/svg%3E'">
@@ -711,23 +812,10 @@
                             </div>
                         </div>
                         <div class="stats-column-right">
-                            <div class="school-info-wrapper">
-                                <div class="school-details-header">
-                                    <h2>${school.sch_name}</h2>
-                                </div>
-                                <div class="school-details-content">
-                                    ${schoolEOI}
-                                    ${schoolRegion}
-                                    ${schoolAddress}
-                                    ${schoolWebsite}
-                                </div>
+                            <div class="school-map-container">
+                                <div id="school-map"></div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="school-map-container">
-                        <label class="school-map-label">Location</label>
-                        <div id="school-map"></div>
                     </div>
                 </div>
             `;
@@ -735,10 +823,71 @@
             // Initialize map after HTML is rendered
             setTimeout(() => {
                 initializeSchoolMap(school);
-            }, 300);
+            }, 500);
             
             // Fetch and display demographics
             fetchAndDisplayDemographics(school.sch_id);
+        }
+        
+        function getMetricColor(value) {
+            // Returns color class based on percentage value
+            if (value >= 80) return 'excellent';
+            if (value >= 65) return 'good';
+            if (value >= 50) return 'average';
+            return 'below-average';
+        }
+        
+        function createBadge(label, value) {
+            if (value === null || value === undefined) return '';
+            const colorClass = getMetricColor(value);
+            return `
+                <div class="metric-badge ${colorClass}">
+                    <div class="metric-badge-label">${label}</div>
+                    <div class="metric-badge-value">${value.toFixed(1)}%</div>
+                </div>
+            `;
+        }
+        
+        function fetchAndDisplayAcademicBadges(schoolId) {
+            fetch(`/api/school/${schoolId}/demographics`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch demographics');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        displayAcademicBadges(data);
+                        // Also display other demographics if needed
+                        displayDemographics(data);
+                    }
+                })
+                .catch(error => {
+                    console.log('Error fetching academic badges:', error);
+                    const badgesContainer = document.getElementById('academic-badges');
+                    if (badgesContainer) {
+                        badgesContainer.innerHTML = '<div style="color: #999; grid-column: 1/-1;">Unable to load metrics</div>';
+                    }
+                });
+        }
+        
+        function displayAcademicBadges(data) {
+            const badgesContainer = document.getElementById('academic-badges');
+            if (!badgesContainer) return;
+            
+            const metrics = data.demographics || {};
+            
+            const badges = [
+                createBadge('NCEA L1', metrics.ncea_level_1_pass_pct),
+                createBadge('NCEA L2', metrics.ncea_level_2_pass_pct),
+                createBadge('NCEA L3', metrics.ncea_level_3_pass_pct),
+                createBadge('University', metrics.university_entrance_pct),
+                createBadge('Retention', metrics.student_retention_pct),
+                createBadge('Endorsement', metrics.ncea_endorsement_pct),
+            ].filter(b => b !== '').join('');
+            
+            badgesContainer.innerHTML = badges || '<div style="color: #999; grid-column: 1/-1;">No metric data available</div>';
         }
         
         function fetchAndDisplayDemographics(schoolId) {
@@ -810,11 +959,6 @@
                     ${progressBar(engage.student_retention_pct)}
                     <div class="demo-kv-value">${engage.student_retention_pct.toFixed(1)}%</div>
                 </div>
-                <div class="demo-kv-pair">
-                    <div class="demo-kv-label">Decile</div>
-                    <div style="display: flex; align-items: center; gap: 4px;"></div>
-                    <div class="demo-kv-value">${perf.decile_rating}</div>
-                </div>
             `;
             
             container.innerHTML = html;
@@ -854,11 +998,37 @@
                     zIndex: 1
                 }).addTo(map);
                 
+                // Recalculate map size after rendering
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 200);
+                
+                // Second invalidateSize for good measure
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 500);
+                
                 console.log('Map initialized successfully');
                 
-                // Geocode the school address
-                if (school.sch_addr) {
-                    geocodeAddress(school.sch_addr, school.sch_name);
+                // Check if we have stored coordinates first
+                if (school.latitude && school.longitude) {
+                    console.log(`Using stored coordinates: [${school.latitude}, ${school.longitude}]`);
+                    
+                    // Remove old marker if exists
+                    if (currentMarker) {
+                        map.removeLayer(currentMarker);
+                    }
+                    
+                    // Add marker and update map view
+                    currentMarker = L.marker([school.latitude, school.longitude]).addTo(map)
+                        .bindPopup(`<strong>${school.sch_name}</strong><br>${school.sch_addr || ''}`);
+                    
+                    map.setView([school.latitude, school.longitude], 15);
+                }
+                // Fall back to geocoding if no stored coordinates
+                else if (school.sch_addr) {
+                    console.log('No stored coordinates, attempting to geocode address:', school.sch_addr);
+                    geocodeAddress(school.sch_addr, school.sch_name, school.sch_id);
                 } else {
                     console.log('No address for school:', school.sch_name);
                 }
@@ -867,43 +1037,65 @@
             }
         }
         
-        function geocodeAddress(address, schoolName) {
+        function geocodeAddress(address, schoolName, schoolId) {
             if (!address || !map) {
                 console.log('Missing address or map not initialized');
                 return;
             }
             
-            // Try with full address first
+            // Clean up address - remove extra spaces before commas
+            const cleanAddress = address.replace(/\s+,/g, ',').replace(/,\s+/g, ', ').trim();
+            
+            // Extract parts: "140 Birkdale Road, Birkenhead, Auckland" -> ["140 Birkdale Road", "Birkenhead", "Auckland"]
+            const parts = cleanAddress.split(',').map(p => p.trim());
+            const streetPart = parts[0] || '';
+            const suburbPart = parts[1] || '';
+            
+            // Build queries in order of specificity
             const queries = [
-                `${address}, Auckland, New Zealand`,
-                `${address.split(',')[0]}, Auckland, New Zealand`,
-                `${schoolName}, Auckland, New Zealand`
+                `${cleanAddress}, New Zealand`,  // Full address
+                `${streetPart}, ${suburbPart}, New Zealand`,  // Street + suburb
+                `${schoolName}, ${suburbPart}, New Zealand`,  // School name + suburb
+                `${schoolName}, New Zealand`,  // Just school name
+                `${suburbPart}, New Zealand`  // Just suburb as fallback
             ];
             
-            tryGeocode(queries, 0, schoolName, address);
+            tryGeocode(queries, 0, schoolName, cleanAddress, schoolId);
         }
         
-        function tryGeocode(queries, index, schoolName, address) {
+        function tryGeocode(queries, index, schoolName, address, schoolId) {
             if (index >= queries.length) {
-                console.log(`Failed to geocode all variants for ${schoolName}`);
+                console.log(`Failed to geocode all variants for ${schoolName} using queries:`, queries);
                 // Default to Auckland center if all fail
-                map.setView([-37.7749, 174.8860], 13);
+                if (map) {
+                    map.setView([-37.7749, 174.8860], 13);
+                }
                 return;
             }
             
             const query = queries[index];
-            const nominatimUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
+            const geocodeUrl = `/api/geocode?q=${encodeURIComponent(query)}`;
             
             console.log(`Attempting geocode (${index + 1}/${queries.length}): ${query}`);
             
-            fetch(nominatimUrl)
+            fetch(geocodeUrl)
                 .then(response => response.json())
                 .then(data => {
-                    if (data && data.length > 0) {
-                        const lat = parseFloat(data[0].lat);
-                        const lon = parseFloat(data[0].lon);
+                    if (data.status === 'success' && data.results && data.results.length > 0) {
+                        const lat = parseFloat(data.results[0].lat);
+                        const lon = parseFloat(data.results[0].lon);
                         
                         console.log(`✓ Geocoded: ${schoolName} at [${lat}, ${lon}]`);
+                        
+                        // Save coordinates to database for future use
+                        if (schoolId) {
+                            fetch(`/api/school/${schoolId}/coordinates`, {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({latitude: lat, longitude: lon})
+                            }).then(() => console.log('Coordinates saved'))
+                              .catch(e => console.log('Failed to save coordinates:', e));
+                        }
                         
                         // Remove old marker if exists
                         if (currentMarker) {
@@ -916,18 +1108,18 @@
                         
                         map.setView([lat, lon], 15);
                     } else {
-                        console.log(`No results for: ${query}`);
+                        console.log(`✗ No results for: ${query}`);
                         // Try next query
                         setTimeout(() => {
-                            tryGeocode(queries, index + 1, schoolName, address);
+                            tryGeocode(queries, index + 1, schoolName, address, schoolId);
                         }, 500);
                     }
                 })
                 .catch(error => {
-                    console.log(`Error geocoding ${query}:`, error);
+                    console.log(`✗ Error geocoding ${query}:`, error);
                     // Try next query
                     setTimeout(() => {
-                        tryGeocode(queries, index + 1, schoolName, address);
+                        tryGeocode(queries, index + 1, schoolName, address, schoolId);
                     }, 500);
                 });
         }

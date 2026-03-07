@@ -68,6 +68,8 @@ class School(db.Model):
     sch_region = db.Column(db.String(50), nullable=True)  # Auckland major sector (North Shore, Central, East, South, West, Rural)
     sch_type = db.Column(db.String(100), nullable=True)  # School type (e.g., Full Primary, Contributing, Secondary)
     tour = db.Column(db.Boolean, nullable=False, default=False)
+    latitude = db.Column(db.Float, nullable=True)  # GPS latitude
+    longitude = db.Column(db.Float, nullable=True)  # GPS longitude
 
     def __repr__(self):
         return f'<School {self.sch_name}>'
