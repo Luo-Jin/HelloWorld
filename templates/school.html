@@ -128,23 +128,50 @@
             display: flex;
             gap: 15px;
             margin-bottom: 15px;
-            align-items: flex-start;
+        }
+        .stats-column-left {
+            flex: 0 0 280px;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .stats-column-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            min-height: 0;
         }
         .ethnic-chart-container {
             flex: 0 0 auto;
-            width: 250px;
-            height: 200px;
+            width: 100%;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            flex-direction: column;
+            background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1), 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid #e8ecf1;
+            padding: 10px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .ethnic-chart-container::before {
+            content: 'Ethnic Distribution';
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #667eea;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e0e7f1;
+            display: block;
         }
         .ethnic-chart-container img {
             max-width: 100%;
-            max-height: 100%;
+            max-height: 250px;
             object-fit: contain;
+            flex: 1;
         }
         .school-details-info {
             flex: 1;
@@ -153,20 +180,18 @@
             min-height: 0;
         }
         .school-details-header {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             padding: 0;
-            border-bottom: none;
+            border-bottom: 1px solid #e2e8f0;
             flex-shrink: 0;
+            padding-bottom: 8px;
         }
         .school-details-header h2 {
             font-size: 1.1rem;
-            color: #333;
-            margin-bottom: 4px;
+            color: #2d3748;
+            margin-bottom: 0;
             font-weight: 700;
-        }
-        .school-details-header p {
-            color: #666;
-            font-size: 0.85rem;
+            letter-spacing: -0.2px;
         }
         .school-details-content {
             flex: 1;
@@ -175,41 +200,52 @@
             padding: 0;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             align-content: flex-start;
+            min-height: 0;
         }
         .detail-item {
             display: grid;
-            grid-template-columns: 120px 1fr;
-            gap: 8px;
+            grid-template-columns: 100px 1fr;
+            gap: 10px;
             align-items: start;
-            padding: 0;
+            padding: 8px 0;
             background-color: transparent;
             border-radius: 0;
             border: none;
             font-size: 0.8rem;
             box-sizing: border-box;
+            flex-shrink: 0;
         }
         .detail-label {
-            font-weight: 600;
+            font-weight: 700;
             color: #667eea;
-            font-size: 0.75rem;
+            font-size: 0.73rem;
             text-transform: uppercase;
             margin-bottom: 0;
             display: block;
             white-space: nowrap;
+            letter-spacing: 0.3px;
+            flex-shrink: 0;
         }
         .detail-value {
-            color: #333;
-            font-size: 0.8rem;
+            color: #2d3748;
+            font-size: 0.85rem;
             word-break: break-word;
+            font-weight: 500;
+            line-height: 1.4;
+            flex-shrink: 1;
         }
-        .detail-link {
-            color: #667eea;
-            text-decoration: none;
-        }
-        .detail-link:hover {
-            text-decoration: underline;
+        .school-info-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 6px;
+            padding: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            min-height: 0;
         }
         .school-map-container {
             flex: 1;
@@ -239,43 +275,51 @@
         }
         .demographics-container {
             flex: 0 0 auto;
-            min-width: 200px;
+            width: 100%;
             display: flex;
             flex-direction: column;
-            background-color: white;
-            border-radius: 5px;
-            padding: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            max-height: 200px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1), 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid #e8ecf1;
             overflow-y: auto;
         }
         .demographics-title {
-            font-weight: 600;
+            font-weight: 700;
             color: #667eea;
             font-size: 0.75rem;
             text-transform: uppercase;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             display: block;
-            padding-bottom: 4px;
-            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e0e7f1;
+            letter-spacing: 0.5px;
         }
         .demo-kv-pair {
             display: grid;
-            grid-template-columns: 80px 1fr;
-            gap: 6px;
-            padding: 4px 0;
-            font-size: 0.75rem;
-            line-height: 1.3;
+            grid-template-columns: 65px 1fr;
+            gap: 8px;
+            padding: 5px 0;
+            font-size: 0.73rem;
+            line-height: 1.4;
             align-items: center;
+            border-bottom: 1px solid #f0f3f7;
+        }
+        .demo-kv-pair:last-child {
+            border-bottom: none;
         }
         .demo-kv-label {
             color: #667eea;
-            font-weight: 600;
-            text-transform: capitalize;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.3px;
         }
         .demo-kv-value {
-            color: #333;
-            font-weight: 500;
+            color: #1a202c;
+            font-weight: 600;
+            font-size: 0.75rem;
         }
         th {
             background-color: #667eea;
@@ -636,22 +680,26 @@
             rightColumn.innerHTML = `
                 <div class="school-details">
                     <div class="school-details-top">
-                        <div style="flex: 1; overflow-y: auto;">
-                            <div class="school-details-header">
-                                <h2>${school.sch_name}</h2>
+                        <div class="stats-column-left">
+                            <div class="ethnic-chart-container">
+                                <img src="${ethnicChartUrl}" alt="Ethnic Distribution" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext x=%2250%22 y=%2250%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2214%22 fill=%22%23999%22%3ENo Chart Data%3C/text%3E%3C/svg%3E'">
                             </div>
-                            <div class="school-details-content">
-                                ${schoolEOI}
-                                ${schoolRegion}
-                                ${schoolAddress}
-                                ${schoolWebsite}
+                            <div class="demographics-container" id="demographics-container">
+                                <div class="demographics-title">Loading...</div>
                             </div>
                         </div>
-                        <div class="ethnic-chart-container">
-                            <img src="${ethnicChartUrl}" alt="Ethnic Distribution" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext x=%2250%22 y=%2250%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2214%22 fill=%22%23999%22%3ENo Chart Data%3C/text%3E%3C/svg%3E'">
-                        </div>
-                        <div class="demographics-container" id="demographics-container" style="margin-left: 8px;">
-                            <div class="demographics-title">Loading...</div>
+                        <div class="stats-column-right">
+                            <div class="school-info-wrapper">
+                                <div class="school-details-header">
+                                    <h2>${school.sch_name}</h2>
+                                </div>
+                                <div class="school-details-content">
+                                    ${schoolEOI}
+                                    ${schoolRegion}
+                                    ${schoolAddress}
+                                    ${schoolWebsite}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -699,7 +747,6 @@
             
             const dem = data.demographics;
             const acad = data.academics;
-            const staff = data.staffing;
             const engage = data.engagement;
             const perf = data.performance;
             
@@ -708,10 +755,6 @@
                 <div class="demo-kv-pair">
                     <div class="demo-kv-label">Students</div>
                     <div class="demo-kv-value">${dem.total_students}</div>
-                </div>
-                <div class="demo-kv-pair">
-                    <div class="demo-kv-label">Attendance</div>
-                    <div class="demo-kv-value">${engage.attendance_rate_pct.toFixed(1)}%</div>
                 </div>
                 <div class="demo-kv-pair">
                     <div class="demo-kv-label">NCEA L1</div>
@@ -728,14 +771,6 @@
                 <div class="demo-kv-pair">
                     <div class="demo-kv-label">University</div>
                     <div class="demo-kv-value">${acad.university_entrance_pct.toFixed(1)}%</div>
-                </div>
-                <div class="demo-kv-pair">
-                    <div class="demo-kv-label">Teachers (FTE)</div>
-                    <div class="demo-kv-value">${staff.total_teachers_fte.toFixed(1)}</div>
-                </div>
-                <div class="demo-kv-pair">
-                    <div class="demo-kv-label">S/T Ratio</div>
-                    <div class="demo-kv-value">${staff.student_teacher_ratio.toFixed(1)}</div>
                 </div>
                 <div class="demo-kv-pair">
                     <div class="demo-kv-label">Retention</div>
