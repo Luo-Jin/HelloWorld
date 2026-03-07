@@ -528,7 +528,7 @@ def create_app(test_config=None):
             return {'status': 'error', 'message': 'School or statistics not found'}, 404
         
         # Create figure
-        fig = Figure(figsize=(5, 4), dpi=80, facecolor='none', edgecolor='none')
+        fig = Figure(figsize=(7, 5.5), dpi=80, facecolor='none', edgecolor='none')
         ax = fig.subplots()
         ax.set_facecolor('none')
         
@@ -557,7 +557,7 @@ def create_app(test_config=None):
         
         # Save to bytes buffer
         img_io = io.BytesIO()
-        fig.savefig(img_io, format='png', bbox_inches='tight', pad_inches=0.2, transparent=True)
+        fig.savefig(img_io, format='png', bbox_inches='tight', pad_inches=0.05, transparent=True)
         img_io.seek(0)
         
         return send_file(img_io, mimetype='image/png', as_attachment=False, download_name='ethnic-chart.png')
