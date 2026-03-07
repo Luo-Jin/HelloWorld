@@ -74,9 +74,9 @@ class School(db.Model):
 
 
 class SchoolStats(db.Model):
-    """School statistics including ethnic demographics."""
+    """School statistics including demographics and academic performance."""
     stat_id = db.Column(db.Integer, primary_key=True)
-    sch_id = db.Column(db.Integer, db.ForeignKey('school.sch_id'), nullable=False, unique=True)
+    sch_id = db.Column(db.Integer, db.ForeignKey('school.sch_id'), nullable=False)
     
     # Ethnic ratios (percentages)
     ethnic_european_pct = db.Column(db.Float, nullable=True)  # European/Pakeha
@@ -85,18 +85,42 @@ class SchoolStats(db.Model):
     ethnic_asian_pct = db.Column(db.Float, nullable=True)  # Asian
     ethnic_other_pct = db.Column(db.Float, nullable=True)  # Other
     
-    # Additional statistics
+    # Student demographics
     total_students = db.Column(db.Integer, nullable=True)
     male_pct = db.Column(db.Float, nullable=True)
     female_pct = db.Column(db.Float, nullable=True)
     
+    # Academic performance (NCEA - from NZQA)
+    ncea_level_1_pass_pct = db.Column(db.Float, nullable=True)  # % students passing Level 1
+    ncea_level_2_pass_pct = db.Column(db.Float, nullable=True)  # % students passing Level 2
+    ncea_level_3_pass_pct = db.Column(db.Float, nullable=True)  # % students passing Level 3
+    university_entrance_pct = db.Column(db.Float, nullable=True)  # % achieving UE
+    ncea_endorsement_pct = db.Column(db.Float, nullable=True)  # % with Merit/Excellence endorsement
+    
+    # School resources & staffing (from Education Counts/MOE)
+    total_teachers_fte = db.Column(db.Float, nullable=True)  # Full-time equivalent teachers
+    student_teacher_ratio = db.Column(db.Float, nullable=True)  # Students per teacher
+    support_staff_fte = db.Column(db.Float, nullable=True)  # Support staff FTE
+    funding_per_student = db.Column(db.Float, nullable=True)  # Dollars per student per year
+    
+    # Engagement & wellbeing metrics
+    attendance_rate_pct = db.Column(db.Float, nullable=True)  # % attendance rate
+    suspension_rate_pct = db.Column(db.Float, nullable=True)  # % of students suspended
+    expulsion_rate_pct = db.Column(db.Float, nullable=True)  # % of students expelled
+    student_retention_pct = db.Column(db.Float, nullable=True)  # % students completing full year
+    
+    # Performance indicators
+    decile_rating = db.Column(db.Integer, nullable=True)  # Decile 1-10 (1=most disadvantaged)
+    equity_index = db.Column(db.Integer, nullable=True)  # Equity Index (higher=more disadvantaged)
+    school_performance_rating = db.Column(db.String(50), nullable=True)  # Excellent/Good/Improving/Requires Support
+    
     # Data source and timestamp
     year = db.Column(db.Integer, nullable=True)  # Statistics year (e.g., 2024)
-    data_source = db.Column(db.String(200), nullable=True)  # Where the data came from
+    data_source = db.Column(db.String(500), nullable=True)  # Where the data came from (pipe-separated)
     last_updated = db.Column(db.DateTime, nullable=True)  # When the data was last updated
     
     # Relationship to School
-    school = db.relationship('School', backref=db.backref('stats', lazy=True, uselist=False))
+    school = db.relationship('School', backref=db.backref('stats', lazy=True))
 
     def __repr__(self):
         return f'<SchoolStats {self.sch_id}>'
