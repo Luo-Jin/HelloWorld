@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schools Information</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            padding: 20px;
+        }
+        .info-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .info-header {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .school-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            background-color: #eee;
+            border-radius: 5px;
+        }
+        .email-link {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .email-link:hover {
+            text-decoration: underline;
+        }
+        .homepage-link {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .homepage-link:hover {
+            text-decoration: underline;
+        }
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="info-container">
+        <h2 class="info-header">Auckland Primary Schools</h2>
+        {% if schools %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>District</th>
+                    <th>Description</th>
+                    <th>Address</th>
+                    <th>EOI</th>
+                    <th>Decile</th>
+                    <th>Homepage</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for school in schools %}
+                <tr>
+                    <td>{{ school.sch_id }}</td>
+                    <td><strong>{{ school.sch_name }}</strong></td>
+                    <td>{{ school.sch_district }}</td>
+                    <td>{{ school.sch_desc }}</td>
+                    <td>{{ school.sch_addr }}</td>
+                    <td>{{ school.sch_eoi }}</td>
+                    <td>{{ school.sch_decile }}</td>
+                    <td>{% if school.sch_homepage %}<a href="{{ school.sch_homepage }}" class="homepage-link" target="_blank">Visit</a>{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="no-data">
+            <p>No schools found in the database.</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
