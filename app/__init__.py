@@ -563,6 +563,57 @@ def create_app(test_config=None):
         
         return send_file(img_io, mimetype='image/png', as_attachment=False, download_name='ethnic-chart.png')
 
+    @app.route('/api/school/<int:school_id>/demographics', methods=['GET'])
+    @login_required
+    def api_school_demographics(school_id):
+        """Return comprehensive demographic data for a school."""
+        from .models import School, SchoolStats
+        
+        year = request.args.get('year', 2024, type=int)
+        
+        # Get school and stats
+        school = School.query.get(school_id)
+        stats = SchoolStats.query.filter_by(sch_id=school_id, year=year).first()
+        
+        if not school or not stats:
+            return {'status': 'error', 'message': 'School or statistics not found'}, 404
+        
+        return {
+            'status': 'success',
+            'school_id': school.sch_id,
+            'school_name': school.sch_name,
+            'year': year,
+            'demographics': {
+                'total_students': stats.total_students or 0,
+                'male_pct': round(stats.male_pct or 0, 1),
+                'female_pct': round(stats.female_pct or 0, 1),
+            },
+            'academics': {
+                'ncea_level_1_pass_pct': round(stats.ncea_level_1_pass_pct or 0, 1),
+                'ncea_level_2_pass_pct': round(stats.ncea_level_2_pass_pct or 0, 1),
+                'ncea_level_3_pass_pct': round(stats.ncea_level_3_pass_pct or 0, 1),
+                'university_entrance_pct': round(stats.university_entrance_pct or 0, 1),
+                'ncea_endorsement_pct': round(stats.ncea_endorsement_pct or 0, 1),
+            },
+            'staffing': {
+                'total_teachers_fte': round(stats.total_teachers_fte or 0, 1),
+                'student_teacher_ratio': round(stats.student_teacher_ratio or 0, 1),
+                'support_staff_fte': round(stats.support_staff_fte or 0, 1),
+                'funding_per_student': round(stats.funding_per_student or 0, 0),
+            },
+            'engagement': {
+                'attendance_rate_pct': round(stats.attendance_rate_pct or 0, 1),
+                'suspension_rate_pct': round(stats.suspension_rate_pct or 0, 1),
+                'expulsion_rate_pct': round(stats.expulsion_rate_pct or 0, 1),
+                'student_retention_pct': round(stats.student_retention_pct or 0, 1),
+            },
+            'performance': {
+                'decile_rating': stats.decile_rating or 'N/A',
+                'equity_index': stats.equity_index or 'N/A',
+                'school_performance_rating': stats.school_performance_rating or 'Not Rated',
+            },
+        }
+
     @app.route('/user_info')
     @login_required
     def user_info():

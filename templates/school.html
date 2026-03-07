@@ -43,6 +43,7 @@
             background-color: #f9f9f9;
             border-radius: 5px;
             padding: 20px;
+            overflow-y: auto;
         }
         .info-header {
             font-size: 1.2rem;
@@ -112,6 +113,7 @@
             flex-direction: column;
             height: 100%;
             gap: 0;
+            min-height: 0;
         }
         .school-details-empty {
             display: flex;
@@ -213,7 +215,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            min-height: 0;
+            min-height: 200px;
             margin-top: 12px;
             padding-top: 0;
             border-top: none;
@@ -234,6 +236,46 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             z-index: 1;
             min-height: 0;
+        }
+        .demographics-container {
+            flex: 0 0 auto;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            border-radius: 5px;
+            padding: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .demographics-title {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            display: block;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .demo-kv-pair {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 6px;
+            padding: 4px 0;
+            font-size: 0.75rem;
+            line-height: 1.3;
+            align-items: center;
+        }
+        .demo-kv-label {
+            color: #667eea;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+        .demo-kv-value {
+            color: #333;
+            font-weight: 500;
         }
         th {
             background-color: #667eea;
@@ -594,9 +636,6 @@
             rightColumn.innerHTML = `
                 <div class="school-details">
                     <div class="school-details-top">
-                        <div class="ethnic-chart-container">
-                            <img src="${ethnicChartUrl}" alt="Ethnic Distribution" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext x=%2250%22 y=%2250%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2214%22 fill=%22%23999%22%3ENo Chart Data%3C/text%3E%3C/svg%3E'">
-                        </div>
                         <div style="flex: 1; overflow-y: auto;">
                             <div class="school-details-header">
                                 <h2>${school.sch_name}</h2>
@@ -608,7 +647,14 @@
                                 ${schoolWebsite}
                             </div>
                         </div>
+                        <div class="ethnic-chart-container">
+                            <img src="${ethnicChartUrl}" alt="Ethnic Distribution" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext x=%2250%22 y=%2250%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2214%22 fill=%22%23999%22%3ENo Chart Data%3C/text%3E%3C/svg%3E'">
+                        </div>
+                        <div class="demographics-container" id="demographics-container" style="margin-left: 8px;">
+                            <div class="demographics-title">Loading...</div>
+                        </div>
                     </div>
+                    
                     <div class="school-map-container">
                         <label class="school-map-label">Location</label>
                         <div id="school-map"></div>
@@ -620,7 +666,90 @@
             setTimeout(() => {
                 initializeSchoolMap(school);
             }, 300);
+            
+            // Fetch and display demographics
+            fetchAndDisplayDemographics(school.sch_id);
         }
+        
+        function fetchAndDisplayDemographics(schoolId) {
+            fetch(`/api/school/${schoolId}/demographics`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch demographics');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        displayDemographics(data);
+                    }
+                })
+                .catch(error => {
+                    console.log('Error fetching demographics:', error);
+                    const container = document.getElementById('demographics-container');
+                    if (container) {
+                        container.innerHTML = '<div class="demographics-title">Demographics data not available</div>';
+                    }
+                });
+        }
+        
+        function displayDemographics(data) {
+            const container = document.getElementById('demographics-container');
+            if (!container) return;
+            
+            const dem = data.demographics;
+            const acad = data.academics;
+            const staff = data.staffing;
+            const engage = data.engagement;
+            const perf = data.performance;
+            
+            const html = `
+                <div class="demographics-title">Key Metrics</div>
+                <div class="demo-kv-pair">
+                    <div class="demo-kv-label">Students</div>
+                    <div class="demo-kv-value">${dem.total_students}</div>
+                </div>
+                <div class="demo-kv-pair">
+                    <div class="demo-kv-label">Attendance</div>
+                    <div class="demo-kv-value">${engage.attendance_rate_pct.toFixed(1)}%</div>
+                </div>
+                <div class="demo-kv-pair">
+                    <div class="demo-kv-label">NCEA L1</div>
+                    <div class="demo-kv-value">${acad.ncea_level_1_pass_pct.toFixed(1)}%</div>
+                </div>
+                <div class="demo-kv-pair">
+                    <div class="demo-kv-label">NCEA L2</div>
+                    <div class="demo-kv-value">${acad.ncea_level_2_pass_pct.toFixed(1)}%</div>
+                </div>
+                <div class="demo-kv-pair">
+                    <div class="demo-kv-label">NCEA L3</div>
+                    <div class="demo-kv-value">${acad.ncea_level_3_pass_pct.toFixed(1)}%</div>
+                </div>
+                <div class="demo-kv-pair">
+                    <div class="demo-kv-label">University</div>
+                    <div class="demo-kv-value">${acad.university_entrance_pct.toFixed(1)}%</div>
+                </div>
+                <div class="demo-kv-pair">
+                    <div class="demo-kv-label">Teachers (FTE)</div>
+                    <div class="demo-kv-value">${staff.total_teachers_fte.toFixed(1)}</div>
+                </div>
+                <div class="demo-kv-pair">
+                    <div class="demo-kv-label">S/T Ratio</div>
+                    <div class="demo-kv-value">${staff.student_teacher_ratio.toFixed(1)}</div>
+                </div>
+                <div class="demo-kv-pair">
+                    <div class="demo-kv-label">Retention</div>
+                    <div class="demo-kv-value">${engage.student_retention_pct.toFixed(1)}%</div>
+                </div>
+                <div class="demo-kv-pair">
+                    <div class="demo-kv-label">Decile</div>
+                    <div class="demo-kv-value">${perf.decile_rating}</div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+        
         
         let map = null;
         let currentMarker = null;
