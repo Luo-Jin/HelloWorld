@@ -121,12 +121,34 @@
             color: #999;
             font-size: 1rem;
         }
+        .school-details-top {
+            flex: 0 0 auto;
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: flex-start;
+        }
+        .ethnic-chart-container {
+            flex: 0 0 auto;
+            width: 250px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .ethnic-chart-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
         .school-details-info {
-            flex: 0 0 30%;
+            flex: 1;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
-            padding-right: 8px;
+            min-height: 0;
         }
         .school-details-header {
             margin-bottom: 12px;
@@ -566,17 +588,25 @@
                     <div class="detail-value">${school.sch_eoi}</div>
                 </div>` : '';
             
+            // Build the ethnic chart image URL
+            const ethnicChartUrl = `/api/school/${school.sch_id}/ethnic-chart`;
+            
             rightColumn.innerHTML = `
                 <div class="school-details">
-                    <div class="school-details-info">
-                        <div class="school-details-header">
-                            <h2>${school.sch_name}</h2>
+                    <div class="school-details-top">
+                        <div class="ethnic-chart-container">
+                            <img src="${ethnicChartUrl}" alt="Ethnic Distribution" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext x=%2250%22 y=%2250%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2214%22 fill=%22%23999%22%3ENo Chart Data%3C/text%3E%3C/svg%3E'">
                         </div>
-                        <div class="school-details-content">
-                            ${schoolEOI}
-                            ${schoolRegion}
-                            ${schoolAddress}
-                            ${schoolWebsite}
+                        <div style="flex: 1; overflow-y: auto;">
+                            <div class="school-details-header">
+                                <h2>${school.sch_name}</h2>
+                            </div>
+                            <div class="school-details-content">
+                                ${schoolEOI}
+                                ${schoolRegion}
+                                ${schoolAddress}
+                                ${schoolWebsite}
+                            </div>
                         </div>
                     </div>
                     <div class="school-map-container">

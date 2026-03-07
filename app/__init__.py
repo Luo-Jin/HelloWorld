@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash, abort
+from flask import Flask, render_template, request, redirect, url_for, flash, abort, send_file
 import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
@@ -507,6 +507,61 @@ def create_app(test_config=None):
             'year': year,
             'data': stats_data,
         }
+
+    @app.route('/api/school/<int:school_id>/ethnic-chart', methods=['GET'])
+    @login_required
+    def api_ethnic_chart(school_id):
+        """Generate and return ethnic distribution pie chart as PNG image."""
+        import io
+        import base64
+        from matplotlib.figure import Figure
+        from .models import School, SchoolStats
+        
+        year = request.args.get('year', 2024, type=int)
+        
+        # Get school and stats
+        school = School.query.get(school_id)
+        stats = SchoolStats.query.filter_by(sch_id=school_id, year=year).first()
+        
+        if not school or not stats:
+            # Return 404 or placeholder
+            return {'status': 'error', 'message': 'School or statistics not found'}, 404
+        
+        # Create figure
+        fig = Figure(figsize=(5, 4), dpi=80, facecolor='white', edgecolor='none')
+        ax = fig.subplots()
+        
+        # Prepare data
+        colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd']
+        ethnic_labels = ['European', 'Asian', 'Maori', 'Pacific', 'Other']
+        ethnic_data = [
+            stats.ethnic_european_pct or 0,
+            stats.ethnic_asian_pct or 0,
+            stats.ethnic_maori_pct or 0,
+            stats.ethnic_pacific_pct or 0,
+            stats.ethnic_other_pct or 0
+        ]
+        
+        # Create pie chart
+        wedges, texts, autotexts = ax.pie(ethnic_data, labels=ethnic_labels, autopct='%1.1f%%',
+                                           colors=colors, startangle=90)
+        
+        for autotext in autotexts:
+            autotext.set_color('white')
+            autotext.set_fontweight('bold')
+            autotext.set_fontsize(8)
+        
+        for text in texts:
+            text.set_fontsize(9)
+        
+        ax.set_title('Ethnic Distribution', fontsize=11, fontweight='bold', pad=10)
+        
+        # Save to bytes buffer
+        img_io = io.BytesIO()
+        fig.savefig(img_io, format='png', bbox_inches='tight', pad_inches=0.2)
+        img_io.seek(0)
+        
+        return send_file(img_io, mimetype='image/png', as_attachment=False, download_name='ethnic-chart.png')
 
     @app.route('/user_info')
     @login_required

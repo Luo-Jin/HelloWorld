@@ -542,20 +542,23 @@ def create_or_update_school_stats(school_id: int, year: int, stats_data: dict) -
         return school_stats
 
 
-def crawl_all_schools_2024():
+def crawl_all_schools(year: int = 2024):
     """
-    Crawl 2024 statistics for all schools in the database.
+    Crawl statistics for all schools in the database for a specified year.
     Data fetching strategy:
     1. Attempt to fetch from public authorities (Education Counts, MOE, NZQA)
     2. Fall back to Stats NZ regional demographic data
     3. Apply school-level variance estimates for individual school variation
+    
+    Args:
+        year: The year to collect statistics for (default: 2024)
     """
     with app.app_context():
         schools = School.query.all()
         total = len(schools)
         
         print(f"\n{'='*70}")
-        print(f"Crawling 2024 Statistics for {total} Schools")
+        print(f"Crawling {year} Statistics for {total} Schools")
         print(f"Data Sources: Stats NZ, Education Counts, MOE, NZQA")
         print(f"{'='*70}\n")
         
@@ -678,13 +681,13 @@ def crawl_all_schools_2024():
                 
                 # Create or update stats
                 if stats_data:
-                    create_or_update_school_stats(school.sch_id, 2024, stats_data)
+                    create_or_update_school_stats(school.sch_id, year, stats_data)
                     
                     # Track data source usage
                     source = stats_data.get('data_source', 'Unknown').split('|')[0].strip()
                     stats_by_source[source] = stats_by_source.get(source, 0) + 1
                     
-                    print(f"  ✓ 2024 Statistics updated with {len([k for k, v in stats_data.items() if v is not None])} fields")
+                    print(f"  ✓ {year} Statistics updated with {len([k for k, v in stats_data.items() if v is not None])} fields")
                     successful += 1
                 else:
                     print(f"  ✗ No data available")
@@ -708,18 +711,22 @@ def crawl_all_schools_2024():
         print(f"{'='*70}\n")
 
 
-def show_school_stats_2024(school_id: int = None):
+def show_school_stats(year: int = 2024, school_id: int = None):
     """
-    Display 2024 statistics for schools.
+    Display statistics for schools for a specified year.
+    
+    Args:
+        year: The year to display statistics for (default: 2024)
+        school_id: Optional specific school ID to display
     """
     with app.app_context():
         if school_id:
             school = School.query.get(school_id)
-            stats = SchoolStats.query.filter_by(sch_id=school_id, year=2024).first()
+            stats = SchoolStats.query.filter_by(sch_id=school_id, year=year).first()
             
             if school and stats:
                 print(f"\n{'='*70}")
-                print(f"2024 Statistics for: {school.sch_name}")
+                print(f"{year} Statistics for: {school.sch_name}")
                 print(f"{'='*70}")
                 print(f"Total Students: {stats.total_students}")
                 print(f"Male: {stats.male_pct}% | Female: {stats.female_pct}%")
@@ -734,16 +741,16 @@ def show_school_stats_2024(school_id: int = None):
                 print(f"Last Updated: {stats.last_updated}")
                 print(f"{'='*70}\n")
             else:
-                print(f"No 2024 stats found for school ID {school_id}")
+                print(f"No {year} stats found for school ID {school_id}")
         else:
-            # Show summary for all 2024 schools
-            stats_list = SchoolStats.query.filter_by(year=2024).all()
+            # Show summary for all schools for the specified year
+            stats_list = SchoolStats.query.filter_by(year=year).all()
             if not stats_list:
-                print("No 2024 school statistics in database yet.")
+                print(f"No {year} school statistics in database yet.")
                 return
             
             print(f"\n{'='*70}")
-            print(f"2024 School Statistics Summary ({len(stats_list)} schools)")
+            print(f"{year} School Statistics Summary ({len(stats_list)} schools)")
             print(f"{'='*70}\n")
             
             for stat in stats_list[:10]:  # Show first 10
@@ -760,15 +767,16 @@ def show_school_stats_2024(school_id: int = None):
 if __name__ == '__main__':
     import argparse
     
-    parser = argparse.ArgumentParser(description='Crawl and manage 2024 school statistics')
-    parser.add_argument('--crawl', action='store_true', help='Crawl 2024 statistics for all schools')
-    parser.add_argument('--show', type=int, nargs='?', const=None, help='Show 2024 statistics (optionally for specific school ID)')
+    parser = argparse.ArgumentParser(description='Crawl and manage school statistics by year')
+    parser.add_argument('--crawl', action='store_true', help='Crawl statistics for all schools')
+    parser.add_argument('--year', type=int, default=2024, help='Year to collect/display statistics for (default: 2024)')
+    parser.add_argument('--show', type=int, nargs='?', const=None, help='Show statistics (optionally for specific school ID)')
     
     args = parser.parse_args()
     
     if args.crawl:
-        crawl_all_schools_2024()
+        crawl_all_schools(args.year)
     elif args.show is not None:
-        show_school_stats_2024(args.show)
+        show_school_stats(args.year, args.show)
     else:
         parser.print_help()
