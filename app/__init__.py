@@ -528,8 +528,9 @@ def create_app(test_config=None):
             return {'status': 'error', 'message': 'School or statistics not found'}, 404
         
         # Create figure
-        fig = Figure(figsize=(5, 4), dpi=80, facecolor='white', edgecolor='none')
+        fig = Figure(figsize=(5, 4), dpi=80, facecolor='none', edgecolor='none')
         ax = fig.subplots()
+        ax.set_facecolor('none')
         
         # Prepare data
         colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd']
@@ -554,11 +555,9 @@ def create_app(test_config=None):
         for text in texts:
             text.set_fontsize(9)
         
-        ax.set_title('Ethnic Distribution', fontsize=11, fontweight='bold', pad=10)
-        
         # Save to bytes buffer
         img_io = io.BytesIO()
-        fig.savefig(img_io, format='png', bbox_inches='tight', pad_inches=0.2)
+        fig.savefig(img_io, format='png', bbox_inches='tight', pad_inches=0.2, transparent=True)
         img_io.seek(0)
         
         return send_file(img_io, mimetype='image/png', as_attachment=False, download_name='ethnic-chart.png')

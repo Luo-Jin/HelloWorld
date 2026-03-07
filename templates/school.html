@@ -206,33 +206,38 @@
         }
         .detail-item {
             display: grid;
-            grid-template-columns: 150px 1fr;
-            gap: 10px;
+            grid-template-columns: 65px 1fr;
+            gap: 8px;
             align-items: start;
             padding: 8px 0;
             background-color: transparent;
             border-radius: 0;
             border: none;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             box-sizing: border-box;
             flex-shrink: 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .detail-item:last-child {
+            border-bottom: none;
         }
         .detail-label {
             font-weight: 700;
             color: #667eea;
-            font-size: 0.73rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             margin-bottom: 0;
             display: block;
-            white-space: nowrap;
+            white-space: normal;
             letter-spacing: 0.3px;
             flex-shrink: 0;
+            line-height: 1.3;
         }
         .detail-value {
             color: #2d3748;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             word-break: break-word;
-            font-weight: 500;
+            font-weight: 600;
             line-height: 1.4;
             flex-shrink: 1;
         }
@@ -298,9 +303,9 @@
         }
         .demo-kv-pair {
             display: grid;
-            grid-template-columns: 65px 1fr;
-            gap: 8px;
-            padding: 5px 0;
+            grid-template-columns: 65px 1fr 35px;
+            gap: 6px;
+            padding: 6px 0;
             font-size: 0.73rem;
             line-height: 1.4;
             align-items: center;
@@ -316,10 +321,25 @@
             font-size: 0.7rem;
             letter-spacing: 0.3px;
         }
+        .demo-kv-bar {
+            height: 6px;
+            background-color: #e0e7f1;
+            border-radius: 3px;
+            overflow: hidden;
+            min-height: 6px;
+        }
+        .demo-kv-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #8b9cff 100%);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
         .demo-kv-value {
             color: #1a202c;
             font-weight: 600;
             font-size: 0.75rem;
+            text-align: right;
+            min-width: 35px;
         }
         th {
             background-color: #667eea;
@@ -750,34 +770,47 @@
             const engage = data.engagement;
             const perf = data.performance;
             
+            // Helper function to create progress bar for percentage values
+            const progressBar = (value) => {
+                const pct = Math.min(100, Math.max(0, parseFloat(value)));
+                return `<div class="demo-kv-bar"><div class="demo-kv-bar-fill" style="width: ${pct}%"></div></div>`;
+            };
+            
             const html = `
                 <div class="demographics-title">Key Metrics</div>
                 <div class="demo-kv-pair">
                     <div class="demo-kv-label">Students</div>
+                    <div style="display: flex; align-items: center; gap: 4px;"></div>
                     <div class="demo-kv-value">${dem.total_students}</div>
                 </div>
                 <div class="demo-kv-pair">
                     <div class="demo-kv-label">NCEA L1</div>
+                    ${progressBar(acad.ncea_level_1_pass_pct)}
                     <div class="demo-kv-value">${acad.ncea_level_1_pass_pct.toFixed(1)}%</div>
                 </div>
                 <div class="demo-kv-pair">
                     <div class="demo-kv-label">NCEA L2</div>
+                    ${progressBar(acad.ncea_level_2_pass_pct)}
                     <div class="demo-kv-value">${acad.ncea_level_2_pass_pct.toFixed(1)}%</div>
                 </div>
                 <div class="demo-kv-pair">
                     <div class="demo-kv-label">NCEA L3</div>
+                    ${progressBar(acad.ncea_level_3_pass_pct)}
                     <div class="demo-kv-value">${acad.ncea_level_3_pass_pct.toFixed(1)}%</div>
                 </div>
                 <div class="demo-kv-pair">
                     <div class="demo-kv-label">University</div>
+                    ${progressBar(acad.university_entrance_pct)}
                     <div class="demo-kv-value">${acad.university_entrance_pct.toFixed(1)}%</div>
                 </div>
                 <div class="demo-kv-pair">
                     <div class="demo-kv-label">Retention</div>
+                    ${progressBar(engage.student_retention_pct)}
                     <div class="demo-kv-value">${engage.student_retention_pct.toFixed(1)}%</div>
                 </div>
                 <div class="demo-kv-pair">
                     <div class="demo-kv-label">Decile</div>
+                    <div style="display: flex; align-items: center; gap: 4px;"></div>
                     <div class="demo-kv-value">${perf.decile_rating}</div>
                 </div>
             `;
