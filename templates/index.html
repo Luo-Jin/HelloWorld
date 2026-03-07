@@ -22,12 +22,10 @@
         .banner-frame {
             height: 200px;
             border: none;
-            border-bottom: 2px solid #ccc;
         }
         .dropdown-frame {
             height: 100px;
             border: none;
-            border-bottom: 2px solid #ccc;
         }
         .info-frame {
             flex: 1;
@@ -48,8 +46,9 @@
     
     <script>
         window.addEventListener('message', function(event) {
+            var infoFrame = document.getElementById('infoFrame');
+            
             if (event.data.type === 'applyFilters') {
-                var infoFrame = document.getElementById('infoFrame');
                 var params = [];
                 
                 if (event.data.region) {
@@ -67,6 +66,16 @@
                 } else {
                     infoFrame.src = '/info';
                 }
+                
+                // Clear active button state when filters are applied
+                var bannerFrame = document.querySelector('.banner-frame');
+                if (bannerFrame && bannerFrame.contentWindow) {
+                    bannerFrame.contentWindow.postMessage({type: 'clearActiveTab'}, '*');
+                }
+            } else if (event.data.type === 'viewUserInfo') {
+                infoFrame.src = '/user_info';
+            } else if (event.data.type === 'viewSchools') {
+                infoFrame.src = '/info';
             }
         });
     </script>

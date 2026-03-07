@@ -14,44 +14,95 @@
             min-height: 100vh;
             font-family: Arial, sans-serif;
             background-color: #fff;
-            padding: 10px;
-            font-size: 14px;
+            padding: 5px;
+            font-size: 12px;
+            overflow-x: hidden;
+            line-height: 1.2;
         }
         .info-container {
-            max-width: 1200px;
-            margin: 0 auto;
+            max-width: none;
+            margin: 0;
+            display: flex;
+            flex-direction: row;
+            min-height: 100vh;
+            gap: 20px;
+            padding: 10px;
+        }
+        .left-column {
+            flex: 0 0 40%;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            min-height: 0;
+        }
+        .right-column {
+            flex: 0 0 60%;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 20px;
         }
         .info-header {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
+            margin-bottom: 6px;
+            padding-bottom: 4px;
             border-bottom: 2px solid #667eea;
         }
         table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        .table-wrapper {
+            max-height: 70vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            margin-top: 15px;
+        }
+        table thead {
+            background-color: #667eea;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         th, td {
-            padding: 6px 10px;
+            padding: 10px;
             text-align: left;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #ddd;
+            font-size: 0.85rem;
+            line-height: 1;
+        }
+        tr {
+            height: auto;
+            overflow: visible;
+        }
+        tbody tr {
+            max-height: none;
+        }
+        tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+        tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f0f0f0;
         }
         th {
             background-color: #667eea;
             color: white;
             font-weight: 600;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            font-size: 13px;
-        }
-        tr:hover {
-            background-color: #f5f5f5;
+            border-bottom: 2px solid #667eea;
+            padding: 10px;
+            font-size: 0.85rem;
         }
         .school-logo {
-            width: 28px;
-            height: 28px;
+            width: 18px;
+            height: 18px;
             object-fit: contain;
             background-color: #f5f5f5;
             border-radius: 4px;
@@ -62,12 +113,32 @@
         }
         .school-type {
             color: #666;
-            font-size: 12px;
+            font-size: 0.85rem;
+        }
+        select {
+            padding: 4px 6px;
+            font-size: 11px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            background-color: white;
+            height: auto;
+        }
+        input[type="text"] {
+            padding: 4px 6px;
+            font-size: 11px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            background-color: white;
+            height: auto;
+        }
+        label {
+            font-size: 11px;
+            margin-right: 3px;
         }
         .homepage-link {
             color: #667eea;
             text-decoration: none;
-            font-size: 12px;
+            font-size: 0.85rem;
         }
         .homepage-link:hover {
             text-decoration: underline;
@@ -77,12 +148,48 @@
             padding: 40px;
             color: #999;
         }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 5px;
+            padding-top: 10px;
+            flex-wrap: wrap;
+        }
+        .pagination button, .pagination span {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+        .pagination button:hover {
+            background-color: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .pagination .active {
+            background-color: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .pagination .disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
     <div class="info-container">
+        <div class="left-column">
         <!-- Dropdown filters (combined) -->
-        <div style="margin-bottom:12px; display:flex; gap:12px; align-items:center;">
+        <div style="margin-top:15px; margin-bottom:4px; display:flex; gap:6px; align-items:center; flex-wrap: wrap;">
+            <div>
+                <label for="searchSchool">Search</label>
+                <input type="text" id="searchSchool" placeholder="School name" onkeyup="applyFilters()">
+            </div>
             <div>
                 <label for="region">Region</label>
                 <select id="region" name="region" onchange="applyFilters()">
@@ -111,48 +218,189 @@
             </div>
         </div>
         {% if schools %}
+        <div class="table-wrapper">
         <table>
             <thead>
                 <tr>
                     <th></th>
                     <th>School</th>
                     <th>Type</th>
-                    <th style="text-align:center;">Tour</th>
                     <th>EOI</th>
                     <th>Link</th>
                 </tr>
             </thead>
-            <tbody>
-                {% for school in schools %}
+            <tbody id="schools-list">
                 <tr>
-                    <td>{% if school.sch_logo %}<img src="{{ school.sch_logo }}" alt="" class="school-logo">{% else %}<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z'/%3E%3C/svg%3E" alt="" class="school-logo">{% endif %}</td>
-                    <td class="school-name">{{ school.sch_name }}</td>
-                    <td class="school-type">{{ school.sch_type }}</td>
-                    <td style="text-align:center;"><input type="checkbox" disabled {% if school.tour %}checked{% endif %}></td>
-                    <td>{{ school.sch_eoi }}</td>
-                    <td>{% if school.sch_homepage %}<a href="{{ school.sch_homepage }}" class="homepage-link" target="_blank">↗</a>{% endif %}</td>
+                    <td colspan="5" style="text-align: center; padding: 40px; color: #999;">Loading schools...</td>
                 </tr>
-                {% endfor %}
             </tbody>
         </table>
+        </div>
+        <div class="pagination" id="pagination-controls"></div>
         {% else %}
         <div class="no-data">
             <p>No schools found in the database.</p>
         </div>
         {% endif %}
+        </div>
+        <div class="right-column">
+            <!-- Reserved for future use -->
+        </div>
     </div>
     <script>
-        function applyFilters(){
-            var region = document.getElementById('region').value;
-            var schoolType = document.getElementById('schoolType').value;
-            var tour = document.getElementById('tourFilter').value;
-            var params = [];
-            if(region) params.push('region='+encodeURIComponent(region));
-            if(schoolType) params.push('school_type='+encodeURIComponent(schoolType));
-            if(tour) params.push('tour='+encodeURIComponent(tour));
-            var q = params.length?('?'+params.join('&')):'';
-            window.location = window.location.pathname + q;
+        let currentPage = 1;
+        let totalPages = 1;
+        let allSchools = [];
+
+        function fuzzyMatch(str, pattern) {
+            const patternLower = pattern.toLowerCase();
+            const strLower = str.toLowerCase();
+            let patternIdx = 0;
+            for (let i = 0; i < strLower.length; i++) {
+                if (strLower[i] === patternLower[patternIdx]) {
+                    patternIdx++;
+                }
+                if (patternIdx === pattern.length) {
+                    return true;
+                }
+            }
+            return patternIdx === pattern.length;
         }
+
+        function getFilterParams() {
+            const region = document.getElementById('region').value;
+            const schoolType = document.getElementById('schoolType').value;
+            const tour = document.getElementById('tourFilter').value;
+            return {
+                region: region,
+                school_type: schoolType,
+                tour: tour
+            };
+        }
+
+        function loadSchoolsPage(page) {
+            currentPage = page;
+            const params = getFilterParams();
+            const queryString = new URLSearchParams({
+                page: page,
+                ...params
+            }).toString();
+            
+            fetch('/api/schools?' + queryString)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        displaySchools(data.schools);
+                        totalPages = data.pages;
+                        renderPaginationControls(data.current_page, data.pages);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading schools');
+                });
+        }
+
+        function displaySchools(schools) {
+            allSchools = schools;
+            const schoolsList = document.getElementById('schools-list');
+            const search = document.getElementById('searchSchool').value;
+            
+            let filteredSchools = schools;
+            if (search) {
+                filteredSchools = schools.filter(school => fuzzyMatch(school.sch_name, search));
+            }
+            
+            schoolsList.innerHTML = '';
+            
+            if (filteredSchools.length === 0) {
+                schoolsList.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: #999;">No schools found matching filters.</td></tr>';
+                document.getElementById('pagination-controls').innerHTML = '';
+                return;
+            }
+            
+            filteredSchools.forEach(school => {
+                const row = document.createElement('tr');
+                
+                let logoHtml = '';
+                if (school.sch_logo) {
+                    logoHtml = `<img src="${school.sch_logo}" alt="" class="school-logo">`;
+                } else {
+                    logoHtml = '<img src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23999\'%3E%3Cpath d=\'M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z\'/%3E%3C/svg%3E" alt="" class="school-logo">';
+                }
+                
+                const checkboxChecked = school.tour ? 'checked' : '';
+                const homepageLink = school.sch_homepage ? `<a href="${school.sch_homepage}" class="homepage-link" target="_blank">↗</a>` : '';
+                
+                row.innerHTML = `
+                    <td>${logoHtml}</td>
+                    <td class="school-name">${school.sch_name}</td>
+                    <td class="school-type">${school.sch_type}</td>
+                    <td>${school.sch_eoi}</td>
+                    <td>${homepageLink}</td>
+                `;
+                
+                schoolsList.appendChild(row);
+            });
+        }
+
+        function renderPaginationControls(currentPage, totalPages) {
+            const paginationDiv = document.getElementById('pagination-controls');
+            paginationDiv.innerHTML = '';
+            
+            // Previous button
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = '← Prev';
+            prevBtn.onclick = () => loadSchoolsPage(currentPage - 1);
+            if (currentPage <= 1) {
+                prevBtn.disabled = true;
+                prevBtn.className = 'disabled';
+            }
+            paginationDiv.appendChild(prevBtn);
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (totalPages <= 7 || i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    if (i === currentPage - 2 && currentPage > 3) {
+                        const dots = document.createElement('span');
+                        dots.textContent = '...';
+                        paginationDiv.appendChild(dots);
+                    }
+                    if (!(i === currentPage - 2 && currentPage > 3)) {
+                        const pageBtn = document.createElement('button');
+                        pageBtn.textContent = i;
+                        pageBtn.onclick = () => loadSchoolsPage(i);
+                        if (i === currentPage) {
+                            pageBtn.className = 'active';
+                        }
+                        paginationDiv.appendChild(pageBtn);
+                    }
+                }
+            }
+            
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Next →';
+            nextBtn.onclick = () => loadSchoolsPage(currentPage + 1);
+            if (currentPage >= totalPages) {
+                nextBtn.disabled = true;
+                nextBtn.className = 'disabled';
+            }
+            paginationDiv.appendChild(nextBtn);
+        }
+
+        function applyFilters(){
+            // Reset to page 1 when filters are applied
+            loadSchoolsPage(1);
+        }
+
+        // Load first page on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const schoolsList = document.getElementById('schools-list');
+            if (schoolsList) {
+                loadSchoolsPage(1);
+            }
+        });
     </script>
 </body>
 </html>

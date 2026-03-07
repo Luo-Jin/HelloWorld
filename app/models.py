@@ -3,6 +3,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
 
+class Role(db.Model):
+    role_id = db.Column(db.Integer, primary_key=True)
+    role_name = db.Column(db.String(80), unique=True, nullable=False)
+    role_desc = db.Column(db.String(200), nullable=True)
+
+    def __repr__(self):
+        return f'<Role {self.role_name}>'
+
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -10,6 +19,11 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(200), nullable=True)
     confirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmed_at = db.Column(db.DateTime, nullable=True)
+    is_active = db.Column(db.Boolean, nullable=False, default=True)  # User lock/unlock status
+    role_id = db.Column(db.Integer, db.ForeignKey('role.role_id'), nullable=True)
+
+    # Relationship to Role
+    role = db.relationship('Role', backref=db.backref('users', lazy=True))
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -21,6 +35,23 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return f'<User {self.username}>'
+
+
+class Student(db.Model):
+    stu_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    first_name = db.Column(db.String(100), nullable=False)
+    last_name = db.Column(db.String(100), nullable=False)
+    birth_date = db.Column(db.Date, nullable=False)
+    gender = db.Column(db.String(20), nullable=False)  # M, F, Other
+    passport_number = db.Column(db.String(50), nullable=False)
+    nationality = db.Column(db.String(100), nullable=False)
+    
+    # Relationship to User
+    user = db.relationship('User', backref=db.backref('students', lazy=True, cascade='all, delete-orphan'))
+
+    def __repr__(self):
+        return f'<Student {self.name}>'
 
 
 class School(db.Model):

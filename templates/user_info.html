@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 10px;
+            font-size: 14px;
+            margin: 0;
+        }
+        .main-container {
+            display: grid;
+            grid-template-columns: 30% 70%;
+            gap: 10px;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+        }
+        .profile-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .profile-header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .profile-title {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .profile-subtitle {
+            color: #666;
+            font-size: 0.85rem;
+        }
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+            font-size: 0.9rem;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #333;
+            min-width: 80px;
+            font-size: 0.9rem;
+        }
+        .info-value {
+            color: #666;
+            flex: 1;
+            text-align: right;
+            word-break: break-word;
+            font-size: 0.9rem;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .badge-verified {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .badge-unverified {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .profile-footer {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #999;
+            font-size: 0.8rem;
+        }
+        .right-column {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 15px;
+            overflow-y: auto;
+        }
+        .admin-header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .admin-title {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .users-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+            font-size: 0.9rem;
+        }
+        .user-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .user-name {
+            font-weight: 600;
+            color: #333;
+        }
+        .user-email {
+            color: #666;
+            font-size: 0.85rem;
+        }
+        .user-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .btn-small {
+            padding: 4px 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+        .btn-lock {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .btn-lock:hover {
+            background-color: #e0a800;
+        }
+        .btn-unlock {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-unlock:hover {
+            background-color: #218838;
+        }
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-locked {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .pagination button, .pagination span {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+        .pagination button:hover {
+            background-color: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .pagination .active {
+            background-color: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .pagination .disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        .users-table thead {
+            background-color: #667eea;
+            color: white;
+        }
+        .users-table th {
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #667eea;
+        }
+        .users-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .users-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+        .users-table tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        .users-table tbody tr:nth-child(even) {
+            background-color: #f0f0f0;
+        }
+        .users-table .user-actions-cell {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            white-space: nowrap;
+        }
+        .student-header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .student-title {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .add-student-form {
+            background-color: #f9f9f9;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border-left: 4px solid #28a745;
+        }
+        .form-group {
+            margin-bottom: 10px;
+            display: flex;
+            gap: 8px;
+        }
+        .form-group input {
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .form-group button {
+            padding: 6px 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .form-group button:hover {
+            background-color: #218838;
+        }
+        .students-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        .students-table thead {
+            background-color: #667eea;
+            color: white;
+        }
+        .students-table th {
+            padding: 8px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #667eea;
+        }
+        .students-table td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        .students-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+        .students-table tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        .students-table tbody tr:nth-child(even) {
+            background-color: #f0f0f0;
+        }
+        .table-actions {
+            display: flex;
+            gap: 4px;
+            white-space: nowrap;
+        }
+        .btn-edit {
+            background-color: #0066cc;
+            color: white;
+        }
+        .btn-edit:hover {
+            background-color: #0052a3;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+        }
+        .modal-header {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .close-btn {
+            float: right;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+        }
+        .close-btn:hover {
+            color: #333;
+        }
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .modal-form label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+        }
+        .modal-form input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+        .modal-form input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 4px rgba(102, 126, 234, 0.3);
+        }
+        .modal-form select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+        .modal-form select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 4px rgba(102, 126, 234, 0.3);
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn-modal-submit {
+            flex: 1;
+            padding: 8px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-modal-submit:hover {
+            background-color: #218838;
+        }
+        .btn-modal-cancel {
+            flex: 1;
+            padding: 8px;
+            background-color: #999;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-modal-cancel:hover {
+            background-color: #777;
+        }
+        .add-btn-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .add-btn-header button {
+            padding: 8px 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .add-btn-header button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-title">👤 User Profile</div>
+                <div class="profile-subtitle">Your Account Information</div>
+            </div>
+            
+            <div class="profile-info">
+                <div class="info-row">
+                    <span class="info-label">Username:</span>
+                    <span class="info-value">{{ user.username }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">{{ user.email }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Email Verified:</span>
+                    <span class="info-value">
+                        {% if user.confirmed %}
+                            <span class="badge badge-verified">✓ Verified</span>
+                        {% else %}
+                            <span class="badge badge-unverified">✗ Unverified</span>
+                        {% endif %}
+                    </span>
+                </div>
+                
+                {% if user.confirmed_at %}
+                <div class="info-row">
+                    <span class="info-label">Verified On:</span>
+                    <span class="info-value">{{ user.confirmed_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                </div>
+                {% endif %}
+                
+                <div class="info-row">
+                    <span class="info-label">Account ID:</span>
+                    <span class="info-value">#{{ user.id }}</span>
+                </div>
+            </div>
+            
+            <div class="profile-footer">
+                <p>Last updated: {{ now.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            </div>
+        </div>
+        
+        <div class="right-column">
+            {% if is_admin %}
+                <div class="admin-header">
+                    <div class="admin-title">User Management</div>
+                    <div style="font-size: 0.9rem; color: #666;">Total Users: <span id="total-users">0</span></div>
+                </div>
+                <table class="users-table" id="users-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Students</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-list">
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #999; padding: 20px;">Loading users...</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="pagination" id="pagination-controls"></div>
+            {% else %}
+                <div class="student-header">
+                    <div class="student-title">📚 My Students</div>
+                    <div style="font-size: 0.9rem; color: #666;">Total: <span id="total-students">{{ students|length }}</span></div>
+                </div>
+                
+                <div class="add-btn-header">
+                    <button onclick="openAddStudentModal()">+ Add Student</button>
+                </div>
+                
+                <div class="students-list">
+                    <table class="students-table" id="students-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>ID</th>
+                                <th>Birth Date</th>
+                                <th>Gender</th>
+                                <th>Passport</th>
+                                <th>Nationality</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-list">
+                            {% for student in students %}
+                            <tr data-student-id="{{ student.stu_id }}">
+                                <td>{{ student.first_name }} {{ student.last_name }}</td>
+                                <td>#{{ student.stu_id }}</td>
+                                <td>{{ student.birth_date.strftime('%Y-%m-%d') if student.birth_date else 'N/A' }}</td>
+                                <td>
+                                    {% if student.gender == 'M' %}Male
+                                    {% elif student.gender == 'F' %}Female
+                                    {% else %}{{ student.gender }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ student.passport_number }}</td>
+                                <td>{{ student.nationality }}</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="btn-small btn-edit" onclick="editStudent({{ student.stu_id }}, this)">Edit</button>
+                                        <button class="btn-small btn-delete" onclick="deleteStudent({{ student.stu_id }}, this)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if students|length == 0 %}
+                <div style="text-align: center; color: #999; padding: 20px; font-size: 0.9rem;">You have no students yet. Add one using the button above!</div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Modal for adding student -->
+    <div id="addStudentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close-btn" onclick="closeAddStudentModal()">&times;</span>
+                Add New Student
+            </div>
+            <form class="modal-form" onsubmit="submitAddStudent(event)">
+                <div>
+                    <label for="modal-first-name">First Name *</label>
+                    <input type="text" id="modal-first-name" placeholder="First name" maxlength="100" required>
+                </div>
+                <div>
+                    <label for="modal-last-name">Last Name *</label>
+                    <input type="text" id="modal-last-name" placeholder="Last name" maxlength="100" required>
+                </div>
+                <div>
+                    <label for="modal-birth-date">Birth Date *</label>
+                    <input type="date" id="modal-birth-date" required>
+                </div>
+                <div>
+                    <label for="modal-gender">Gender *</label>
+                    <select id="modal-gender" required style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.95rem;">
+                        <option value="">-- Select Gender --</option>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="modal-passport">Passport Number *</label>
+                    <input type="text" id="modal-passport" placeholder="Passport number" maxlength="50" required>
+                </div>
+                <div>
+                    <label for="modal-nationality">Nationality *</label>
+                    <input type="text" id="modal-nationality" placeholder="Nationality" maxlength="100" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-modal-submit">Add Student</button>
+                    <button type="button" class="btn-modal-cancel" onclick="closeAddStudentModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for editing student -->
+    <div id="editStudentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close-btn" onclick="closeEditStudentModal()">&times;</span>
+                Edit Student
+            </div>
+            <form class="modal-form" onsubmit="submitEditStudent(event)">
+                <input type="hidden" id="edit-student-id">
+                <div>
+                    <label for="edit-first-name">First Name *</label>
+                    <input type="text" id="edit-first-name" placeholder="First name" maxlength="100" required>
+                </div>
+                <div>
+                    <label for="edit-last-name">Last Name *</label>
+                    <input type="text" id="edit-last-name" placeholder="Last name" maxlength="100" required>
+                </div>
+                <div>
+                    <label for="edit-birth-date">Birth Date *</label>
+                    <input type="date" id="edit-birth-date" required>
+                </div>
+                <div>
+                    <label for="edit-gender">Gender *</label>
+                    <select id="edit-gender" required style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.95rem;">
+                        <option value="">-- Select Gender --</option>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="edit-passport">Passport Number *</label>
+                    <input type="text" id="edit-passport" placeholder="Passport number" maxlength="50" required>
+                </div>
+                <div>
+                    <label for="edit-nationality">Nationality *</label>
+                    <input type="text" id="edit-nationality" placeholder="Nationality" maxlength="100" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-modal-submit">Update Student</button>
+                    <button type="button" class="btn-modal-cancel" onclick="closeEditStudentModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLockUser(userId, buttonElement) {
+            if (confirm('Are you sure you want to toggle the lock status of this user?')) {
+                fetch('/admin/users/toggle-lock/' + userId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Reload the current page of users
+                        loadUsersPage(currentUserPage);
+                        alert('User status updated successfully!');
+                    } else {
+                        alert('Error: ' + (data.message || 'Failed to toggle user status'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while updating user status');
+                });
+            }
+        }
+
+        function deleteUser(userId, buttonElement) {
+            if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+                fetch('/admin/users/delete/' + userId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Reload the current page of users
+                        loadUsersPage(currentUserPage);
+                        alert('User deleted successfully!');
+                    } else {
+                        alert('Error: ' + (data.message || 'Failed to delete user'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the user');
+                });
+            }
+        }
+
+        function openAddStudentModal() {
+            document.getElementById('addStudentModal').style.display = 'block';
+            document.getElementById('modal-first-name').focus();
+        }
+
+        function closeAddStudentModal() {
+            document.getElementById('addStudentModal').style.display = 'none';
+            document.getElementById('modal-first-name').value = '';
+            document.getElementById('modal-last-name').value = '';
+            document.getElementById('modal-birth-date').value = '';
+            document.getElementById('modal-gender').value = '';
+            document.getElementById('modal-passport').value = '';
+            document.getElementById('modal-nationality').value = '';
+        }
+
+        function submitAddStudent(event) {
+            event.preventDefault();
+            const firstName = document.getElementById('modal-first-name').value.trim();
+            const lastName = document.getElementById('modal-last-name').value.trim();
+            const birthDate = document.getElementById('modal-birth-date').value;
+            const gender = document.getElementById('modal-gender').value;
+            const passport = document.getElementById('modal-passport').value.trim();
+            const nationality = document.getElementById('modal-nationality').value.trim();
+            
+            if (!firstName || !lastName || !birthDate || !gender || !passport || !nationality) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            fetch('/student/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    first_name: firstName,
+                    last_name: lastName,
+                    birth_date: birthDate,
+                    gender: gender,
+                    passport_number: passport,
+                    nationality: nationality
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Clear input and close modal
+                    closeAddStudentModal();
+                    
+                    // Add new student to the table
+                    const studentsList = document.getElementById('students-list');
+                    const newRow = document.createElement('tr');
+                    newRow.setAttribute('data-student-id', data.stu_id);
+                    
+                    const genderDisplay = data.gender === 'M' ? 'Male' : (data.gender === 'F' ? 'Female' : data.gender);
+                    
+                    newRow.innerHTML = `
+                        <td>${data.first_name} ${data.last_name}</td>
+                        <td>#${data.stu_id}</td>
+                        <td>${data.birth_date}</td>
+                        <td>${genderDisplay}</td>
+                        <td>${data.passport_number}</td>
+                        <td>${data.nationality}</td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="btn-small btn-edit" onclick="editStudent(${data.stu_id}, this)">Edit</button>
+                                <button class="btn-small btn-delete" onclick="deleteStudent(${data.stu_id}, this)">Delete</button>
+                            </div>
+                        </td>
+                    `;
+                    
+                    // Remove "no students" message if exists
+                    const emptyMsg = studentsList.querySelector('[style*="text-align: center"]');
+                    if (emptyMsg) emptyMsg.remove();
+                    
+                    studentsList.appendChild(newRow);
+                    
+                    // Update count
+                    document.getElementById('total-students').textContent = parseInt(document.getElementById('total-students').textContent) + 1;
+                    
+                    alert('Student added successfully!');
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to add student'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while adding the student');
+            });
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const addModal = document.getElementById('addStudentModal');
+            const editModal = document.getElementById('editStudentModal');
+            if (event.target == addModal) {
+                closeAddStudentModal();
+            }
+            if (event.target == editModal) {
+                closeEditStudentModal();
+            }
+        }
+
+        function editStudent(studentId, buttonElement) {
+            // Get the row data
+            const row = buttonElement.closest('tr');
+            const cells = row.querySelectorAll('td');
+            const fullName = cells[0].textContent.trim();
+            const birthDate = cells[2].textContent.trim();
+            const genderText = cells[3].textContent.trim();
+            const passport = cells[4].textContent.trim();
+            const nationality = cells[5].textContent.trim();
+            
+            // Parse full name
+            const nameParts = fullName.split(' ');
+            const firstName = nameParts[0];
+            const lastName = nameParts.slice(1).join(' ');
+            
+            // Convert gender text to code
+            const genderCode = genderText === 'Male' ? 'M' : (genderText === 'Female' ? 'F' : 'Other');
+            
+            // Populate edit form
+            document.getElementById('edit-student-id').value = studentId;
+            document.getElementById('edit-first-name').value = firstName;
+            document.getElementById('edit-last-name').value = lastName;
+            document.getElementById('edit-birth-date').value = birthDate;
+            document.getElementById('edit-gender').value = genderCode;
+            document.getElementById('edit-passport').value = passport;
+            document.getElementById('edit-nationality').value = nationality;
+            
+            // Open edit modal
+            document.getElementById('editStudentModal').style.display = 'block';
+            document.getElementById('edit-first-name').focus();
+        }
+
+        function closeEditStudentModal() {
+            document.getElementById('editStudentModal').style.display = 'none';
+            document.getElementById('edit-student-id').value = '';
+            document.getElementById('edit-first-name').value = '';
+            document.getElementById('edit-last-name').value = '';
+            document.getElementById('edit-birth-date').value = '';
+            document.getElementById('edit-gender').value = '';
+            document.getElementById('edit-passport').value = '';
+            document.getElementById('edit-nationality').value = '';
+        }
+
+        function submitEditStudent(event) {
+            event.preventDefault();
+            const studentId = document.getElementById('edit-student-id').value;
+            const firstName = document.getElementById('edit-first-name').value.trim();
+            const lastName = document.getElementById('edit-last-name').value.trim();
+            const birthDate = document.getElementById('edit-birth-date').value;
+            const gender = document.getElementById('edit-gender').value;
+            const passport = document.getElementById('edit-passport').value.trim();
+            const nationality = document.getElementById('edit-nationality').value.trim();
+            
+            if (!firstName || !lastName || !birthDate || !gender || !passport || !nationality) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            fetch('/student/update/' + studentId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    first_name: firstName,
+                    last_name: lastName,
+                    birth_date: birthDate,
+                    gender: gender,
+                    passport_number: passport,
+                    nationality: nationality
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    closeEditStudentModal();
+                    
+                    // Find and update the table row
+                    const row = document.querySelector(`tr[data-student-id="${studentId}"]`);
+                    if (row) {
+                        const genderDisplay = gender === 'M' ? 'Male' : (gender === 'F' ? 'Female' : gender);
+                        row.querySelector('td:nth-child(1)').textContent = `${firstName} ${lastName}`;
+                        row.querySelector('td:nth-child(3)').textContent = birthDate;
+                        row.querySelector('td:nth-child(4)').textContent = genderDisplay;
+                        row.querySelector('td:nth-child(5)').textContent = passport;
+                        row.querySelector('td:nth-child(6)').textContent = nationality;
+                    }
+                    
+                    alert('Student updated successfully!');
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to update student'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the student');
+            });
+        }
+
+        function deleteStudent(studentId, buttonElement) {
+            if (confirm('Are you sure you want to delete this student? This action cannot be undone.')) {
+                fetch('/student/delete/' + studentId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Remove the student row from the table
+                        const studentRow = buttonElement.closest('tr');
+                        studentRow.remove();
+                        
+                        // Update total student count
+                        const totalStudents = document.getElementById('total-students');
+                        const currentCount = parseInt(totalStudents.textContent);
+                        totalStudents.textContent = currentCount - 1;
+                        
+                        // Check if no students left
+                        const studentsList = document.getElementById('students-list');
+                        if (studentsList.children.length === 0) {
+                            // Add a "no students" message
+                            const emptyRow = document.createElement('tr');
+                            emptyRow.innerHTML = '<td colspan="7" style="text-align: center; color: #999; padding: 20px;">You have no students yet. Add one using the button above!</td>';
+                            studentsList.appendChild(emptyRow);
+                        }
+                        
+                        alert('Student deleted successfully!');
+                    } else {
+                        alert('Error: ' + (data.message || 'Failed to delete student'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the student');
+                });
+            }
+        }
+
+        // Pagination functions for user management
+        let currentUserPage = 1;
+        let totalUserPages = 1;
+
+        function loadUsersPage(page) {
+            currentUserPage = page;
+            
+            fetch('/api/users?page=' + page)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        displayUsers(data.users);
+                        totalUserPages = data.pages;
+                        document.getElementById('total-users').textContent = data.total;
+                        renderPaginationControls(data.current_page, data.pages);
+                    } else {
+                        alert('Error: ' + (data.message || 'Failed to load users'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while loading users');
+                });
+        }
+
+        function displayUsers(users) {
+            const usersList = document.getElementById('users-list');
+            usersList.innerHTML = '';
+            
+            if (users.length === 0) {
+                usersList.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #999; padding: 20px;">No users found</td></tr>';
+                return;
+            }
+            
+            users.forEach(u => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-user-id', u.id);
+                
+                const statusBadgeClass = u.is_active ? 'status-active' : 'status-locked';
+                const statusText = u.is_active ? 'Active' : 'Locked';
+                
+                let actionsHtml = '';
+                if (u.username !== 'admin') {
+                    const buttonClass = u.is_active ? 'btn-lock' : 'btn-unlock';
+                    const buttonText = u.is_active ? 'Lock' : 'Unlock';
+                    actionsHtml = `
+                        <button class="btn-small ${buttonClass}" onclick="toggleLockUser(${u.id}, this)">${buttonText}</button>
+                        <button class="btn-small btn-delete" onclick="deleteUser(${u.id}, this)">Delete</button>
+                    `;
+                } else {
+                    actionsHtml = '<span style="font-size: 0.85rem; color: #999;">Admin Account</span>';
+                }
+                
+                const usernameDisplay = u.username === 'admin' ? `${u.username} <span style="color: #667eea; font-size: 0.75rem;">(Admin)</span>` : u.username;
+                
+                row.innerHTML = `
+                    <td>${usernameDisplay}</td>
+                    <td>${u.role}</td>
+                    <td>${u.student_count}</td>
+                    <td><span class="status-badge ${statusBadgeClass}">${statusText}</span></td>
+                    <td class="user-actions-cell">${actionsHtml}</td>
+                `;
+                
+                usersList.appendChild(row);
+            });
+        }
+
+        function renderPaginationControls(currentPage, totalPages) {
+            const paginationDiv = document.getElementById('pagination-controls');
+            paginationDiv.innerHTML = '';
+            
+            // Previous button
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = '← Prev';
+            prevBtn.onclick = () => loadUsersPage(currentPage - 1);
+            if (currentPage <= 1) {
+                prevBtn.disabled = true;
+                prevBtn.className = 'disabled';
+            }
+            paginationDiv.appendChild(prevBtn);
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (totalPages <= 7 || i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    if (i === currentPage - 2 && currentPage > 3) {
+                        const dots = document.createElement('span');
+                        dots.textContent = '...';
+                        paginationDiv.appendChild(dots);
+                    }
+                    if (!(i === currentPage - 2 && currentPage > 3)) {
+                        const pageBtn = document.createElement('button');
+                        pageBtn.textContent = i;
+                        pageBtn.onclick = () => loadUsersPage(i);
+                        if (i === currentPage) {
+                            pageBtn.className = 'active';
+                        }
+                        paginationDiv.appendChild(pageBtn);
+                    }
+                }
+            }
+            
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Next →';
+            nextBtn.onclick = () => loadUsersPage(currentPage + 1);
+            if (currentPage >= totalPages) {
+                nextBtn.disabled = true;
+                nextBtn.className = 'disabled';
+            }
+            paginationDiv.appendChild(nextBtn);
+        }
+
+        // Load first page of users on page load if admin
+        document.addEventListener('DOMContentLoaded', function() {
+            const paginationControls = document.getElementById('pagination-controls');
+            if (paginationControls) {
+                // Admin is viewing the page, load first page of users
+                loadUsersPage(1);
+            }
+        });
+    </script>
+</body>
+</html>
