@@ -458,6 +458,56 @@ def create_app(test_config=None):
             'per_page': per_page,
         }
 
+    @app.route('/api/school-stats/<int:school_id>', methods=['GET'])
+    @login_required
+    def api_school_stats(school_id):
+        """API endpoint for school statistics by school ID."""
+        from .models import School, SchoolStats
+        
+        year = request.args.get('year', 2024, type=int)
+        
+        # Get school
+        school = School.query.get(school_id)
+        if not school:
+            return {'status': 'error', 'message': 'School not found'}, 404
+        
+        # Get statistics for the specified year
+        stats = SchoolStats.query.filter_by(sch_id=school_id, year=year).first()
+        
+        if not stats:
+            return {
+                'status': 'success',
+                'school_id': school_id,
+                'year': year,
+                'data': None,
+                'message': f'No statistics available for year {year}'
+            }
+        
+        # Format statistics data
+        stats_data = {
+            'stat_id': stats.stat_id,
+            'sch_id': stats.sch_id,
+            'year': stats.year,
+            'total_students': stats.total_students,
+            'ethnic_european_pct': round(stats.ethnic_european_pct, 1) if stats.ethnic_european_pct else None,
+            'ethnic_maori_pct': round(stats.ethnic_maori_pct, 1) if stats.ethnic_maori_pct else None,
+            'ethnic_pacific_pct': round(stats.ethnic_pacific_pct, 1) if stats.ethnic_pacific_pct else None,
+            'ethnic_asian_pct': round(stats.ethnic_asian_pct, 1) if stats.ethnic_asian_pct else None,
+            'ethnic_other_pct': round(stats.ethnic_other_pct, 1) if stats.ethnic_other_pct else None,
+            'male_pct': round(stats.male_pct, 1) if stats.male_pct else None,
+            'female_pct': round(stats.female_pct, 1) if stats.female_pct else None,
+            'data_source': stats.data_source,
+            'last_updated': stats.last_updated.isoformat() if stats.last_updated else None,
+        }
+        
+        return {
+            'status': 'success',
+            'school_id': school_id,
+            'school_name': school.sch_name,
+            'year': year,
+            'data': stats_data,
+        }
+
     @app.route('/user_info')
     @login_required
     def user_info():

@@ -91,6 +91,7 @@ class SchoolStats(db.Model):
     female_pct = db.Column(db.Float, nullable=True)
     
     # Data source and timestamp
+    year = db.Column(db.Integer, nullable=True)  # Statistics year (e.g., 2024)
     data_source = db.Column(db.String(200), nullable=True)  # Where the data came from
     last_updated = db.Column(db.DateTime, nullable=True)  # When the data was last updated
     
