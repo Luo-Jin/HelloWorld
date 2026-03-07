@@ -68,8 +68,35 @@ class School(db.Model):
     sch_region = db.Column(db.String(50), nullable=True)  # Auckland major sector (North Shore, Central, East, South, West, Rural)
     sch_type = db.Column(db.String(100), nullable=True)  # School type (e.g., Full Primary, Contributing, Secondary)
     tour = db.Column(db.Boolean, nullable=False, default=False)
-    tour = db.Column(db.Boolean, nullable=False, default=False)
 
     def __repr__(self):
         return f'<School {self.sch_name}>'
+
+
+class SchoolStats(db.Model):
+    """School statistics including ethnic demographics."""
+    stat_id = db.Column(db.Integer, primary_key=True)
+    sch_id = db.Column(db.Integer, db.ForeignKey('school.sch_id'), nullable=False, unique=True)
+    
+    # Ethnic ratios (percentages)
+    ethnic_european_pct = db.Column(db.Float, nullable=True)  # European/Pakeha
+    ethnic_maori_pct = db.Column(db.Float, nullable=True)  # Maori
+    ethnic_pacific_pct = db.Column(db.Float, nullable=True)  # Pacific Islander
+    ethnic_asian_pct = db.Column(db.Float, nullable=True)  # Asian
+    ethnic_other_pct = db.Column(db.Float, nullable=True)  # Other
+    
+    # Additional statistics
+    total_students = db.Column(db.Integer, nullable=True)
+    male_pct = db.Column(db.Float, nullable=True)
+    female_pct = db.Column(db.Float, nullable=True)
+    
+    # Data source and timestamp
+    data_source = db.Column(db.String(200), nullable=True)  # Where the data came from
+    last_updated = db.Column(db.DateTime, nullable=True)  # When the data was last updated
+    
+    # Relationship to School
+    school = db.relationship('School', backref=db.backref('stats', lazy=True, uselist=False))
+
+    def __repr__(self):
+        return f'<SchoolStats {self.sch_id}>'
 

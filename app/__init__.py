@@ -412,7 +412,7 @@ def create_app(test_config=None):
         region = request.args.get('region', '')
         school_type = request.args.get('school_type', '')
         tour_param = request.args.get('tour', '')
-        per_page = 10
+        per_page = 13
         
         query = School.query
         
@@ -441,6 +441,12 @@ def create_app(test_config=None):
                 'sch_eoi': s.sch_eoi or '-',
                 'sch_homepage': s.sch_homepage or '',
                 'sch_logo': s.sch_logo or '',
+                'sch_addr': s.sch_addr or '',
+                'sch_region': s.sch_region or '',
+                'sch_email': s.sch_email or '',
+                'sch_district': s.sch_district or '',
+                'sch_decile': s.sch_decile or '',
+                'sch_desc': s.sch_desc or '',
             })
         
         return {
